@@ -554,23 +554,24 @@
             }
             
             /* 1. Форма добавления (Base Form) */
+            /* ИСправлено: мобильные браузеры могут ломаться от деления внутри calc, используем готовые коэффициенты */
             .iframe-scaler:not(.tall):not(.zk-scaler):not(.goal-scaler) {
-                height: calc((100vw - 40px) * (336 / 532)) !important;
+                height: calc((100vw - 40px) * 0.6315) !important;
             }
 
             /* 2. Вопросы (Tall Form) */
             .iframe-scaler.tall {
-                height: calc((100vw - 40px) * (406 / 532)) !important;
+                height: calc((100vw - 40px) * 0.7631) !important;
             }
 
             /* 3. Zettelkasten (ZK Scaler) */
             .iframe-scaler.zk-scaler {
-                height: calc((100vw - 40px) * (437 / 578)) !important;
+                height: calc((100vw - 40px) * 0.7560) !important;
             }
 
             /* 4. Цели (Goal Scaler) */
             .iframe-scaler.goal-scaler {
-                height: calc((100vw - 40px) * (400 / 512)) !important;
+                height: calc((100vw - 40px) * 0.7812) !important;
             }
         }
     </style>
@@ -860,14 +861,19 @@
 <script>
     // Функция-шпион: отправляет реальную высоту контента родительскому окну
     const reportHeight = () => {
-        const height = document.getElementById('app-body').offsetHeight;
-        window.parent.postMessage({ type: 'resize-showcase', height: height }, '*');
+        const appBody = document.getElementById('app-body');
+        if (appBody) {
+            const height = appBody.offsetHeight;
+            window.parent.postMessage({ type: 'resize-showcase', height: height }, '*');
+        }
     };
     
-    // Запускаем отслеживание высоты
-    window.addEventListener('load', reportHeight);
+    // Запускаем отслеживание высоты (Надежный запуск без ожидания window.onload)
+    setTimeout(reportHeight, 150);
     window.addEventListener('resize', reportHeight);
-    new ResizeObserver(reportHeight).observe(document.getElementById('app-body'));
+    if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(reportHeight).observe(document.getElementById('app-body'));
+    }
 
     async function runShowcase() {
         const books = ['book-1', 'book-2', 'book-3', 'book-4', 'book-5'].map(id => document.getElementById(id));
@@ -899,7 +905,8 @@
             await new Promise(r => setTimeout(r, 1200)); 
         }
     }
-    window.onload = runShowcase;
+    // Запускаем напрямую через таймаут (обходим баг iOS Safari с window.onload внутри iframe)
+    setTimeout(runShowcase, 150);
 <\/script>
 </body></html>`;
 
@@ -1048,7 +1055,7 @@
             await performClick('btn-save');
             await new Promise(r => setTimeout(r, 5000)); runDemo();
         }
-        window.onload = runDemo;
+        setTimeout(runDemo, 150);
     <\/script>
 </body>
 </html>`;
@@ -1309,7 +1316,7 @@
         }
     }
 
-    window.onload = runGIFLoop;
+    setTimeout(runGIFLoop, 150);
     <\/script>
 </body>
 </html>`;
@@ -1544,7 +1551,7 @@
         }
     }
 
-    window.onload = runNetworkDemo;
+    setTimeout(runNetworkDemo, 150);
 <\/script>
 </body>
 </html>`;
@@ -1774,7 +1781,7 @@
         }
     }
 
-    window.onload = runGoalDemo;
+    setTimeout(runGoalDemo, 150);
 <\/script>
 </body>
 </html>`;
