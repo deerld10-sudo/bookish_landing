@@ -479,8 +479,23 @@
 
         /* Планшеты (Tablet) */
         @media (max-width: 1024px) {
-            .split-section, .split-section.reversed { gap: 40px; padding: 80px 20px; flex-direction: column; flex-wrap: wrap; }
-            .split-text { text-align: center; max-width: 100%; }
+            .hero { padding: 80px 20px; } /* Уменьшили отступы на 20px */
+            
+            .split-section, .split-section.reversed { 
+                gap: 80px; /* Отступ от текста до гифки 80px */
+                padding: 80px 20px; /* В сумме дает 160px между блоками */
+                flex-direction: column; 
+                flex-wrap: wrap; 
+            }
+            
+            .split-text { 
+                text-align: center; 
+                max-width: 600px; /* Сузили контейнер текста до 600px */
+                margin: 0 auto; /* Центрируем контейнер */
+            }
+            
+            .split-desc { font-size: 14px; } /* Текст описания 14px */
+            
             .split-visual { width: 100%; justify-content: center; overflow: hidden; }
             .title-serif { font-size: 48px; }
             .title-sans { font-size: 18px; }
@@ -501,21 +516,19 @@
             /* Уменьшаем шрифты текстовых блоков, чтобы они влезали в экран */
             .title-sans-medium { font-size: 26px; }
             .title-serif-medium { font-size: 32px; }
-            .split-desc { font-size: 14px; }
+            .split-desc { font-size: 12px; } /* Текст описания 12px на мобильных */
             
             .final-title { font-size: 36px; }
             .footer-content { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; }
             
-            .hero { padding: 60px 20px 60px 20px; }
-            .split-section, .split-section.reversed { padding: 60px 20px; gap: 30px; }
+            .hero { padding: 60px 20px; }
+            .split-section, .split-section.reversed { padding: 60px 20px; gap: 40px; } /* На мобильных можно оставить чуть меньше отступы */
             .final-cta { padding: 80px 20px; }
             
             #showcase-iframe { border-radius: 16px; }
         }
 
-        /* ТОЧНЫЙ ДИНАМИЧЕСКИЙ СКЕЙЛИНГ АНИМАЦИЙ (Для экранов меньше 650px)
-           Формула (100vw - 40px) высчитывает ширину экрана за вычетом боковых отступов, 
-           чтобы анимации сжимались строго пропорционально и не ломали верстку. */
+        /* ТОЧНЫЙ ДИНАМИЧЕСКИЙ СКЕЙЛИНГ АНИМАЦИЙ (Для экранов меньше 650px) */
         @media (max-width: 650px) {
             .iframe-scaler {
                 width: calc(100vw - 40px) !important;
@@ -757,10 +770,10 @@
         .search-input { width: 100%; background: var(--tg-sec-bg); border: none; border-radius: var(--border-radius-input); padding: 14px 16px; color: var(--tg-text); font-size: 12px; font-weight: 400; }
         .search-input::placeholder { color: rgba(142, 142, 147, 0.6); } 
         
-        /* Исправленная сетка для гифки полки */
+        /* Исправленная сетка для гифки полки - ВСЕГДА 1 РЯД */
         .book-shelf { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; padding: 0 40px 40px 40px; }
-        @media (max-width: 800px) { .book-shelf { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px 20px 20px; } }
-        @media (max-width: 480px) { .book-shelf { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 16px 16px 16px; } .top-nav { padding: 16px 20px; } .search-container { padding: 16px 20px; } }
+        @media (max-width: 800px) { .book-shelf { gap: 12px; padding: 0 20px 20px 20px; } }
+        @media (max-width: 480px) { .book-shelf { gap: 8px; padding: 0 16px 16px 16px; } .top-nav { padding: 16px 20px; } .search-container { padding: 16px 20px; } }
         
         .book-card { position: relative; opacity: 0; transform: translateX(-15px); }
         .book-card.visible { opacity: 1; transform: translateX(0); }
