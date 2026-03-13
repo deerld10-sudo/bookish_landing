@@ -557,32 +557,20 @@
             .iframe-scaler:not(.tall):not(.zk-scaler):not(.goal-scaler) {
                 height: calc((100vw - 40px) * (336 / 532)) !important;
             }
-            #form-demo-iframe {
-                transform: scale(calc((100vw - 40px) / 760)) !important;
-            }
 
             /* 2. Вопросы (Tall Form) */
             .iframe-scaler.tall {
                 height: calc((100vw - 40px) * (406 / 532)) !important;
-            }
-            #questions-demo-iframe {
-                transform: scale(calc((100vw - 40px) / 760)) !important;
             }
 
             /* 3. Zettelkasten (ZK Scaler) */
             .iframe-scaler.zk-scaler {
                 height: calc((100vw - 40px) * (437 / 578)) !important;
             }
-            #zk-demo-iframe {
-                transform: scale(calc((100vw - 40px) / 900)) !important;
-            }
 
             /* 4. Цели (Goal Scaler) */
             .iframe-scaler.goal-scaler {
                 height: calc((100vw - 40px) * (400 / 512)) !important;
-            }
-            #goal-demo-iframe {
-                transform: scale(calc((100vw - 40px) / 640)) !important;
             }
         }
     </style>
@@ -748,6 +736,38 @@
             html = html.replace(/(^|\s)([a-zA-Z]{1,3})\s/g, '$1$2&nbsp;');
             el.innerHTML = html;
         });
+
+        // Точный расчет масштаба (scale) для мобильных iframe с помощью JS
+        // (Так как CSS calc() внутри scale() не поддерживает единицы измерения вроде vw)
+        function updateMobileIframeScale() {
+            if (window.innerWidth <= 650) {
+                const containerWidth = window.innerWidth - 40; // 20px padding слева и справа
+                
+                const formIframe = document.getElementById('form-demo-iframe');
+                const questionsIframe = document.getElementById('questions-demo-iframe');
+                const zkIframe = document.getElementById('zk-demo-iframe');
+                const goalIframe = document.getElementById('goal-demo-iframe');
+                
+                if (formIframe) formIframe.style.transform = `scale(${containerWidth / 760})`;
+                if (questionsIframe) questionsIframe.style.transform = `scale(${containerWidth / 760})`;
+                if (zkIframe) zkIframe.style.transform = `scale(${containerWidth / 900})`;
+                if (goalIframe) goalIframe.style.transform = `scale(${containerWidth / 640})`;
+            } else {
+                // Очищаем inline-стили на экранах > 650px, чтобы работали стандартные CSS-правила
+                const formIframe = document.getElementById('form-demo-iframe');
+                const questionsIframe = document.getElementById('questions-demo-iframe');
+                const zkIframe = document.getElementById('zk-demo-iframe');
+                const goalIframe = document.getElementById('goal-demo-iframe');
+                
+                if (formIframe) formIframe.style.transform = '';
+                if (questionsIframe) questionsIframe.style.transform = '';
+                if (zkIframe) zkIframe.style.transform = '';
+                if (goalIframe) goalIframe.style.transform = '';
+            }
+        }
+        
+        window.addEventListener('resize', updateMobileIframeScale);
+        updateMobileIframeScale(); // Вызываем при загрузке страницы
 
         // Слушатель для динамического изменения высоты второго блока (Showcase)
         window.addEventListener('message', (event) => {
