@@ -518,7 +518,9 @@
             
             .title-serif { font-size: 40px; }
             .title-sans { font-size: 16px; }
-            .description { font-size: 15px; }
+            .description { font-size: 12px; } /* Уменьшили до 12px на мобильных */
+            
+            .btn-primary { font-size: 12px; padding: 0 30px; height: 46px; } /* Кнопки Start for free (12px) */
             
             /* Уменьшаем шрифты текстовых блоков, чтобы они влезали в экран */
             .title-sans-medium { font-size: 26px; }
@@ -526,7 +528,8 @@
             .split-desc { font-size: 12px; } /* Текст описания 12px на мобильных */
             
             .final-title { font-size: 36px; }
-            .footer-content { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; }
+            .footer-content { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; font-size: 10px; } /* Сделали 10px в футере */
+            .footer-content div, .footer-content a { font-size: 10px; } /* Принудительно 10px всем элементам футера */
             
             /* Отступы между всеми блоками: 60px (низ текущего) + 60px (верх следующего) = 120px */
             .hero { padding: 60px 20px; }
@@ -707,7 +710,8 @@
 
     <footer>
         <div class="footer-content">
-            <div>© 2026 Smart Reading Journal. A non-commercial pet project.</div>
+            <!-- Исправлен текст с pet project -->
+            <div>© 2026 Smart Reading Journal. A non-commercial project.</div>
             <div style="display: flex; gap: 20px;">
                 <a href="#">Privacy Policy</a>
                 <a href="mailto:hello@example.com">Contact Developer</a>
@@ -818,10 +822,29 @@
         .search-input { width: 100%; background: var(--tg-sec-bg); border: none; border-radius: var(--border-radius-input); padding: 14px 16px; color: var(--tg-text); font-size: 12px; font-weight: 400; }
         .search-input::placeholder { color: rgba(142, 142, 147, 0.6); } 
         
-        /* Исправленная сетка для гифки полки - ВСЕГДА 1 РЯД */
+        /* Кнопка Гамбургер спрятана по умолчанию на десктопе */
+        .hamburger-btn { display: none; }
+
+        /* Сетка для гифки полки */
         .book-shelf { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; padding: 0 40px 40px 40px; }
-        @media (max-width: 800px) { .book-shelf { gap: 12px; padding: 0 20px 20px 20px; } }
-        @media (max-width: 480px) { .book-shelf { gap: 8px; padding: 0 16px 16px 16px; } .top-nav { padding: 16px 20px; } .search-container { padding: 16px 20px; } }
+        
+        @media (max-width: 800px) { 
+            /* Делаем сетку 3 книги в 2 ряда */
+            .book-shelf { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px 20px 20px; } 
+            .nav-items-wrapper { display: none; } /* Прячем текст-кнопки */
+            .hamburger-btn {
+                display: flex; width: 32px; height: 32px; border-radius: 50%;
+                background: #ffffff; color: #000; align-items: center; justify-content: center;
+                flex-shrink: 0; cursor: pointer;
+            }
+            .hamburger-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; }
+            .top-nav { justify-content: space-between; padding: 16px 20px; }
+        }
+        @media (max-width: 480px) { 
+            .book-shelf { gap: 8px; padding: 0 16px 16px 16px; } 
+            .top-nav { padding: 16px 20px; } 
+            .search-container { padding: 16px 20px; } 
+        }
         
         .book-card { position: relative; opacity: 0; transform: translateX(-15px); }
         .book-card.visible { opacity: 1; transform: translateX(0); }
@@ -837,6 +860,9 @@
 <body>
 <div class="app-container" id="app-body">
     <div class="top-nav" id="nav-bar">
+        <div class="hamburger-btn">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
+        </div>
         <div class="nav-items-wrapper">
             <div class="nav-item active" id="nav-all">All books</div>
             <div class="nav-item">Rating</div>
