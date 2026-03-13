@@ -516,7 +516,7 @@
             .logo img { height: 32px; }
             .btn-auth { padding: 0 16px; font-size: 12px; height: 34px; }
             
-            .title-serif { font-size: 40px; }
+            .title-serif { font-size: 36px; } /* Уменьшили на 4px */
             .title-sans { font-size: 16px; }
             .description { font-size: 12px; } /* Уменьшили до 12px на мобильных */
             
@@ -527,13 +527,13 @@
             .title-serif-medium { font-size: 32px; }
             .split-desc { font-size: 12px; } /* Текст описания 12px на мобильных */
             
-            .final-title { font-size: 36px; }
+            .final-title { font-size: 32px; } /* Уменьшили на 4px */
             .footer-content { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; font-size: 10px; } /* Сделали 10px в футере */
             .footer-content div, .footer-content a { font-size: 10px; } /* Принудительно 10px всем элементам футера */
             
-            /* Отступы между всеми блоками: 60px (низ текущего) + 60px (верх следующего) = 120px */
-            .hero { padding: 60px 20px; }
-            .showcase-section { padding: 60px 20px; }
+            /* Отступы: сокращаем расстояние от первого до второго блока до 60px (30 + 30) */
+            .hero { padding: 60px 20px 30px 20px; }
+            .showcase-section { padding: 30px 20px 60px 20px; }
             .final-cta { padding: 60px 20px; }
             
             .split-section, .split-section.reversed { 
@@ -851,7 +851,7 @@
         .book-cover { width: 100%; aspect-ratio: 2/3; background-color: var(--tg-sec-bg); border-radius: var(--border-radius-card); overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
         .book-cover img { width: 100%; height: 100%; object-fit: cover; }
         .add-card { display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(142, 142, 147, 0.6); border: 1px solid rgba(255,255,255,0.06); height: 100%; text-align: center; } /* Приглушили текст на самой карточке Add Book */
-        .add-card .text { font-size: 12px; font-weight: 600; line-height: 1.3; }
+        .add-card .text { font-size: 10px; font-weight: 600; line-height: 1.3; } /* Уменьшили до 10px */
         .rating-badge { position: absolute; top: -6px; right: -6px; font-size: 9px; font-weight: 700; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; z-index: 10; border: 2px solid var(--tg-bg); }
         .rating-green { background-color: var(--rating-green); }
         .rating-blue { background-color: var(--rating-blue); }
@@ -869,7 +869,7 @@
             <div class="nav-item">Months</div>
             <div class="nav-item">Cards</div>
         </div>
-        <div class="nav-item" id="btn-top-right" style="background: none; color: rgba(142, 142, 147, 0.6);">+ Book</div> <!-- Приглушили кнопку в правом верхнем углу -->
+        <div class="nav-item" id="btn-top-right" style="background: none; color: rgba(142, 142, 147, 0.6); font-size: 10px;">+ Book</div> <!-- Приглушили кнопку в правом верхнем углу и сделали 10px -->
     </div>
     <div id="home-screen">
         <div class="search-container"><input type="text" class="search-input" placeholder="Search by title or author..." readonly></div>
@@ -912,23 +912,23 @@
                 b.classList.remove('visible'); 
             });
             
-            await new Promise(r => setTimeout(r, 800));
+            await new Promise(r => setTimeout(r, 500));
 
             // 2. Плавное появление книг по очереди (Замедлено)
             for (const b of books) { 
-                b.style.transition = 'opacity 1.2s ease, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)'; 
+                b.style.transition = 'opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)'; 
                 b.classList.add('visible'); 
-                await new Promise(r => setTimeout(r, 600)); // Увеличили паузу между появлением книг
+                await new Promise(r => setTimeout(r, 300)); // Ускорили появление книг
             }
 
             // 3. Пауза, чтобы посмотреть на результат
-            await new Promise(r => setTimeout(r, 4000)); // Увеличили время просмотра собранной полки
+            await new Promise(r => setTimeout(r, 2500)); // Сократили паузу в конце
             
             // 4. Плавное затухание всего блока
-            document.body.style.transition = 'opacity 1.2s ease';
+            document.body.style.transition = 'opacity 0.8s ease';
             document.body.style.opacity = '0';
             
-            await new Promise(r => setTimeout(r, 1200)); 
+            await new Promise(r => setTimeout(r, 800)); 
         }
     }
     // Запускаем напрямую через таймаут (обходим баг iOS Safari с window.onload внутри iframe)
@@ -1063,23 +1063,23 @@
         async function performClick(id) {
             const el = document.getElementById(id); const rect = el.getBoundingClientRect();
             cursor.style.display = 'block'; cursor.style.left = (rect.left + rect.width / 2) + 'px'; cursor.style.top = (rect.top + rect.height / 2) + 'px';
-            await new Promise(r => setTimeout(r, 800)); cursor.classList.add('clicking');
+            await new Promise(r => setTimeout(r, 500)); cursor.classList.add('clicking');
             if (id === 'cover-box') { document.getElementById('cover-box').classList.add('active-click'); await new Promise(r => setTimeout(r, 150)); document.getElementById('book-img').classList.add('visible'); document.getElementById('cover-placeholder').style.opacity = '0'; document.getElementById('cover-box').classList.remove('active-click'); }
             if (id === 'btn-save') { el.classList.add('clicked'); await new Promise(r => setTimeout(r, 200)); el.classList.remove('clicked'); el.innerText = "Saved Successfully ✓"; }
             await new Promise(r => setTimeout(r, 200)); cursor.classList.remove('clicking');
         }
         async function runDemo() {
             document.getElementById('input-title').value = ""; document.getElementById('input-author').value = ""; document.getElementById('input-genre').value = ""; document.getElementById('input-tags').value = ""; document.getElementById('book-img').classList.remove('visible'); document.getElementById('cover-placeholder').style.opacity = '1'; document.getElementById('select-month').value = "January"; document.getElementById('select-year').value = "2025"; document.getElementById('btn-save').innerText = "Save notes"; cursor.style.display = 'none';
-            await new Promise(r => setTimeout(r, 1200));
-            await performClick('cover-box'); await new Promise(r => setTimeout(r, 400));
+            await new Promise(r => setTimeout(r, 800));
+            await performClick('cover-box'); await new Promise(r => setTimeout(r, 300));
             await performClick('input-title'); await typeValue('input-title', 'The Favorites');
             await performClick('input-author'); await typeValue('input-author', 'Layne Fargo');
             await performClick('input-genre'); await typeValue('input-genre', 'Romance, Fiction');
             await performClick('input-tags'); await typeValue('input-tags', 'love');
-            await performClick('wrap-month'); document.getElementById('wrap-month').classList.add('focused'); await new Promise(r => setTimeout(r, 400)); document.getElementById('select-month').value = "February"; await new Promise(r => setTimeout(r, 500)); document.getElementById('wrap-month').classList.remove('focused');
-            await performClick('wrap-year'); document.getElementById('wrap-year').classList.add('focused'); await new Promise(r => setTimeout(r, 400)); document.getElementById('select-year').value = "2026"; await new Promise(r => setTimeout(r, 500)); document.getElementById('wrap-year').classList.remove('focused');
+            await performClick('wrap-month'); document.getElementById('wrap-month').classList.add('focused'); await new Promise(r => setTimeout(r, 300)); document.getElementById('select-month').value = "February"; await new Promise(r => setTimeout(r, 400)); document.getElementById('wrap-month').classList.remove('focused');
+            await performClick('wrap-year'); document.getElementById('wrap-year').classList.add('focused'); await new Promise(r => setTimeout(r, 300)); document.getElementById('select-year').value = "2026"; await new Promise(r => setTimeout(r, 400)); document.getElementById('wrap-year').classList.remove('focused');
             await performClick('btn-save');
-            await new Promise(r => setTimeout(r, 5000)); runDemo();
+            await new Promise(r => setTimeout(r, 3000)); runDemo();
         }
         setTimeout(runDemo, 150);
     <\/script>
@@ -1256,7 +1256,7 @@
         cursor.style.left = (rect.left + rect.width / 2) + 'px';
         cursor.style.top = (rect.top + rect.height / 2) + 'px';
         
-        await new Promise(r => setTimeout(r, 700));
+        await new Promise(r => setTimeout(r, 500));
         cursor.classList.add('clicking');
         
         if(!isDirectElement && elementId === 'btn-gen') {
@@ -1314,15 +1314,15 @@
             document.querySelectorAll('.generated-q').forEach(q => q.remove());
             cursor.style.display = 'none';
             
-            await new Promise(r => setTimeout(r, 800));
+            await new Promise(r => setTimeout(r, 500));
             await moveAndClick('btn-gen');
-            await new Promise(r => setTimeout(r, 600));
-            await moveAndClick('chip-main');
             await new Promise(r => setTimeout(r, 400));
+            await moveAndClick('chip-main');
+            await new Promise(r => setTimeout(r, 300));
             
             const ta = document.getElementById('main-textarea');
             if (ta) { await typeText(shortenedText); }
-            await new Promise(r => setTimeout(r, 1200));
+            await new Promise(r => setTimeout(r, 800));
 
             const btnDelete = document.getElementById('btn-delete-answer');
             if (btnDelete) {
@@ -1335,10 +1335,10 @@
                 generatedQs.forEach(q => q.classList.add('vanishing'));
                 document.getElementById('chip-main').classList.remove('selected');
 
-                await new Promise(r => setTimeout(r, 600));
+                await new Promise(r => setTimeout(r, 400));
             }
             
-            await new Promise(r => setTimeout(r, 400));
+            await new Promise(r => setTimeout(r, 300));
         }
     }
 
@@ -1537,14 +1537,14 @@
             cursor.style.display = 'none';
             cursor.style.left = '-100px';
             
-            await new Promise(r => setTimeout(r, 1500));
+            await new Promise(r => setTimeout(r, 800));
 
             const rect = btnLinks.getBoundingClientRect();
             cursor.style.display = 'block';
             cursor.style.left = (rect.left + rect.width / 2) + 'px';
             cursor.style.top = (rect.top + rect.height / 2) + 'px';
             
-            await new Promise(r => setTimeout(r, 800));
+            await new Promise(r => setTimeout(r, 500));
             
             cursor.classList.add('clicking');
             btnLinks.classList.add('active');
@@ -1556,22 +1556,22 @@
 
             cardMain.classList.add('network-view');
             
-            await new Promise(r => setTimeout(r, 300));
+            await new Promise(r => setTimeout(r, 200));
             document.getElementById('card-r1').classList.add('visible');
-            await new Promise(r => setTimeout(r, 150));
+            await new Promise(r => setTimeout(r, 100));
             document.getElementById('card-r2').classList.add('visible');
-            await new Promise(r => setTimeout(r, 150));
+            await new Promise(r => setTimeout(r, 100));
             document.getElementById('card-r3').classList.add('visible');
 
-            await new Promise(r => setTimeout(r, 400));
+            await new Promise(r => setTimeout(r, 250));
             lines.forEach(l => l.classList.add('drawn'));
 
-            await new Promise(r => setTimeout(r, 5000));
+            await new Promise(r => setTimeout(r, 3000));
             
-            document.body.style.transition = 'opacity 0.8s ease';
+            document.body.style.transition = 'opacity 0.6s ease';
             document.body.style.opacity = '0';
             
-            await new Promise(r => setTimeout(r, 1000));
+            await new Promise(r => setTimeout(r, 700));
             
             document.body.style.opacity = '1';
         }
@@ -1708,11 +1708,6 @@
         .goal-reached {
             color: var(--tg-accent) !important;
         }
-
-        .autoplay-tag {
-            position: fixed; bottom: 20px; font-size: 9px; color: var(--tg-hint);
-            text-transform: uppercase; letter-spacing: 3px; opacity: 0.4;
-        }
     </style>
 </head>
 <body>
@@ -1738,20 +1733,18 @@
     </div>
 </div>
 
-<div class="autoplay-tag">Achievement Showcase</div>
-
 <script>
     const covers = [
         "https://static.tildacdn.com/tild3033-6366-4166-a464-353938666266/211399784.jpg",
         "https://static.tildacdn.com/tild3834-3764-4731-b136-356538316365/220207768.jpg",
         "https://static.tildacdn.com/tild6638-6131-4237-b361-383263306232/217245572.jpg",
         "https://static.tildacdn.com/tild3033-6633-4363-a332-663437333866/a60527867d2034b0c53a.jpg",
-        "https://static.tildacdn.com/tild3362-6134-4464-b138-373865666462/220817728.jpg",
-        "https://static.tildacdn.com/tild6237-3661-4534-a339-373230343837/223001257.jpg",
+        "https://static.tildacdn.com/tild3030-6634-4134-b638-663562363030/Romantasy.jpeg",
+        "https://static.tildacdn.com/tild6566-3363-4165-b131-386436666464/A_Body_Not_Her_Own_b.jpeg",
         "https://static.tildacdn.com/tild3866-3966-4261-b163-633762653163/5df6129c8ae3953143b8.jpg",
-        "https://static.tildacdn.com/tild3661-3736-4965-b634-643064636666/-12.jpg",
-        "https://static.tildacdn.com/tild3861-3037-4233-a139-313962353431/-13.jpg",
-        "https://static.tildacdn.com/tild6339-6132-4933-b830-386663663430/-14.jpg"
+        "https://static.tildacdn.com/tild3833-6563-4636-a538-363931366331/-15.jpg",
+        "https://static.tildacdn.com/tild6535-3038-4635-a161-326638333735/Ice_Hockey_Book_cove.jpg",
+        "https://static.tildacdn.com/tild3030-6161-4164-b739-373764303334/892285b7a0e2874926c6.jpg"
     ];
 
     async function runGoalDemo() {
@@ -1772,7 +1765,7 @@
                 if (img) img.remove();
             });
 
-            await new Promise(r => setTimeout(r, 1500));
+            await new Promise(r => setTimeout(r, 800));
 
             // 2. Постепенное заполнение
             for (let i = 0; i < slots.length; i++) {
@@ -1783,7 +1776,7 @@
                 img.src = imgUrl;
                 slot.appendChild(img);
                 
-                await new Promise(r => setTimeout(r, 50));
+                await new Promise(r => setTimeout(r, 40));
                 slot.classList.add('filled');
 
                 const left = slots.length - (i + 1);
@@ -1795,14 +1788,14 @@
                     statusSub.innerText = "You have read 10 books this year.";
                 }
 
-                await new Promise(r => setTimeout(r, 400));
+                await new Promise(r => setTimeout(r, 250));
             }
 
-            await new Promise(r => setTimeout(r, 5000));
+            await new Promise(r => setTimeout(r, 3000));
             
             document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 1s ease';
-            await new Promise(r => setTimeout(r, 1000));
+            document.body.style.transition = 'opacity 0.8s ease';
+            await new Promise(r => setTimeout(r, 800));
             document.body.style.opacity = '1';
         }
     }
