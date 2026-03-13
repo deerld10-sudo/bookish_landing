@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Reading Journal</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- ДОБАВЛЕНО НАЧЕРТАНЕ 400 ДЛЯ MONTSERRAT -->
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@400;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Landing colors */
+            --bg: #161618; 
+            --text-primary: #FFFFFF;
+            --btn-dark: #27272A;
+            --btn-dark-hover: #3F3F46;
+            --accent-green: #85BD3F; 
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400; /* Уменьшили базовую жирность до стандартной */
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* --- Background Effects (Grid & Glow) --- */
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 140vh; /* Охватывает первый и второй блоки */
+            z-index: 0;
+            pointer-events: none;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 80px 80px;
+            background-position: center top;
+            -webkit-mask-image: radial-gradient(ellipse at 50% 40%, black 10%, transparent 70%);
+            mask-image: radial-gradient(ellipse at 50% 40%, black 10%, transparent 70%);
+        }
+
+        .bg-glow {
+            position: absolute;
+            top: 10vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100vw;
+            max-width: 1200px;
+            height: 100vh;
+            background: radial-gradient(circle at 50% 50%, rgba(133, 189, 63, 0.15) 0%, transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 60px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 42px;
+            width: auto;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 12px; /* Чуть уменьшили расстояние между кнопками */
+        }
+
+        .btn-auth {
+            color: var(--text-primary);
+            border: none;
+            border-radius: 30px;
+            height: 38px; /* Уменьшили высоту (было 44px) */
+            padding: 0 20px; /* Уменьшили боковые отступы (было 28px) */
+            font-size: 13px; /* Сделали текст компактнее (было 14px) */
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Разделили стили кнопок для лучшего UX */
+        .btn-auth.ghost {
+            background-color: transparent;
+        }
+        .btn-auth.ghost:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-auth.filled {
+            background-color: var(--btn-dark);
+        }
+        .btn-auth.filled:hover { 
+            background-color: var(--btn-dark-hover); 
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            position: relative;
+            z-index: 10; /* Поверх фона */
+        }
+
+        /* --- Block 1: Hero --- */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px 100px 20px; /* Увеличили нижний отступ на 50px (было 50px) */
+        }
+
+        h1 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .title-serif {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-weight: 400; /* Явно задали нормальную толщину, чтобы шрифт 100% совпадал с нижним блоком */
+            font-size: 56px; 
+            line-height: 1;
+        }
+
+        .title-sans {
+            font-family: 'Inter', sans-serif;
+            font-size: 19px; /* Уменьшили на 7 пунктов (было 26) */
+            font-weight: 400;
+            letter-spacing: -1.2px;
+            margin-top: 5px;
+        }
+
+        .description {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 520px; /* Чуть расширили, чтобы текст ложился ровно в 2 строки, а не в 3 */
+            text-wrap: balance; /* Заставляет браузер делать строки визуально равной длины */
+            opacity: 0.6;
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-green);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 40px;
+            padding: 0 40px; /* Заменили фиксированную ширину на отступы, чтобы кнопка дышала */
+            height: 53px;
+            font-size: 15px; /* Чуть увеличили шрифт для уверенности */
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative; 
+            overflow: hidden; 
+            /* Плавный подъем и появление тени */
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+        }
+
+        .btn-primary:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 24px rgba(133, 189, 63, 0.3); /* Объемная, но рассеянная тень */
+        }
+
+        /* Новая элегантная анимация блика */
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%; 
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transform: skewX(-20deg); 
+            transition: none; 
+        }
+
+        .btn-primary:hover::after {
+            left: 200%; 
+            transition: left 0.8s ease-in-out; 
+        }
+
+        /* --- Block 2: Showcase GIF (App Demo) --- */
+        .showcase-section {
+            width: 100%;
+            max-width: 1300px; /* Приравняли к ширине 3-го блока */
+            margin: 0 auto; /* Центрируем */
+            display: flex;
+            justify-content: center;
+            padding: 50px 60px 100px 60px; /* Увеличили нижний отступ на 50px для формирования отступа в +100px к следующему блоку */
+        }
+
+        #showcase-iframe {
+            width: 100%;
+            /* Убрали жесткую высоту! Теперь она будет подстраиваться автоматически */
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 24px;
+            box-shadow: 0 16px 32px rgba(0,0,0,0.2);
+            background-color: #1A1A1C;
+            transition: height 0.1s ease-out; /* Добавили плавное растягивание по высоте */
+        }
+
+        /* --- Block 3: Split Section (Problem/Solution + Form GIF) --- */
+        .split-section {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap; /* Не переносим на десктопе, жестко держим слева и справа */
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
+            padding: 100px 60px; /* Увеличили отступы сверху и снизу с 50px до 100px, чтобы между блоками стало +100px */
+            max-width: 1300px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+        }
+
+        /* Класс для зеркального отображения блоков */
+        .split-section.reversed {
+            flex-direction: row-reverse;
+        }
+
+        .split-text {
+            flex: 0 1 470px;
+            max-width: 470px; /* Добавили 20px ширины для воздуха, как вы просили */
+            text-align: left;
+        }
+
+        .split-heading {
+            margin: 0 0 24px 0;
+            line-height: 1.3;
+            font-weight: normal;
+        }
+
+        /* Размеры заголовков: 32px для прямого шрифта и 44px для курсива */
+        .title-sans-medium {
+            font-family: 'Inter', sans-serif;
+            font-size: 32px; /* Уменьшили до 32px */
+            font-weight: 400;
+            letter-spacing: -0.5px; 
+            color: #FFFFFF;
+        }
+
+        .title-serif-medium {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 44px; /* Увеличили до 44px */
+            color: #FFFFFF;
+        }
+
+        .split-desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px; /* Увеличили до 16px */
+            font-weight: 400; /* Сделали текст тоньше */
+            line-height: 1.6;
+            color: var(--text-primary);
+            opacity: 0.6;
+            margin: 0;
+        }
+
+        .split-visual {
+            flex: 0 0 auto;
+            display: flex;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        /* Обертка для жесткого масштабирования (масштаб 0.7 от исходных 760x480) */
+        .iframe-scaler {
+            width: 532px; /* 760px * 0.7 */
+            height: 336px; /* 480px * 0.7 */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Обертка специально для 4-го блока, оптимизированная по высоте */
+        .iframe-scaler.tall {
+            height: 406px; /* 580px * 0.7 (Увеличили, чтобы поле с ответом помещалось полностью) */
+        }
+
+        /* Обертка для 5-го блока (Zettelkasten) */
+        .iframe-scaler.zk-scaler {
+            width: 578px; /* 900px * 0.642 (Увеличили ширину на 20px) */
+            height: 437px; /* 680px * 0.642 (Пропорционально вытянута высота) */
+        }
+
+        /* Обертка для 6-го блока (Цели) */
+        .iframe-scaler.goal-scaler {
+            width: 512px; /* 640px * 0.8 */
+            height: 400px; /* 500px * 0.8 */
+        }
+
+        /* --- Block 6: Final CTA --- */
+        .final-cta-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Жестко отрезаем все, что пытается вылезти ниже этого блока (под футер) */
+            -webkit-clip-path: inset(-1000px 0 0 0);
+            clip-path: inset(-1000px 0 0 0);
+        }
+
+        .final-bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 80px 80px;
+            background-position: center center;
+            -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 10%, transparent 60%);
+            mask-image: radial-gradient(ellipse at 50% 50%, black 10%, transparent 60%);
+        }
+
+        .final-bg-glow {
+            position: absolute;
+            bottom: 0; /* Прижали физический блок к низу, чтобы он больше не создавал лишнюю прокрутку под футером */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100vw;
+            max-width: 1200px;
+            height: 800px; 
+            /* Сместили центр градиента вниз (80%), чтобы визуально пятно осталось точно на старом месте */
+            background: radial-gradient(ellipse at 50% 80%, rgba(133, 189, 63, 0.15) 0%, transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .final-cta {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 150px 20px 160px 20px; /* +50px сверху (для +100px общего отступа от пред. блока) и +60px снизу до футера */
+            position: relative;
+            z-index: 10;
+        }
+
+        .final-title {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 56px;
+            font-weight: 400;
+            line-height: 1;
+            margin-bottom: 40px;
+            color: #FFFFFF;
+        }
+
+        /* --- Footer --- */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background-color: var(--bg);
+            position: relative;
+            z-index: 20; 
+            width: 100%;
+        }
+
+        .footer-content {
+            max-width: 1300px; /* Ограничиваем ширину контента футера по ширине остальных блоков */
+            margin: 0 auto; /* Центрируем */
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 60px; /* Внутренние отступы */
+            font-size: 13px;
+            line-height: 1; 
+            color: rgba(255, 255, 255, 0.6); 
+        }
+        
+        .footer-content a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-content a:hover {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* --- Smooth Reveal Animations --- */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            will-change: opacity, transform;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Разделяем стили масштабирования для разных iframe */
+        #form-demo-iframe, #questions-demo-iframe, #zk-demo-iframe, #goal-demo-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: none;
+            background: transparent;
+            transform-origin: top left;
+        }
+
+        #form-demo-iframe {
+            width: 760px;
+            height: 480px;
+            transform: scale(0.7);
+        }
+
+        #questions-demo-iframe {
+            width: 760px;
+            height: 580px; /* Увеличили холст для полного отображения раскрытого поля ввода */
+            transform: scale(0.7);
+        }
+
+        #zk-demo-iframe {
+            width: 900px;
+            height: 680px; /* Увеличили холст для запаса снизу, чтобы карточки не резались */
+            transform: scale(0.642); /* Пропорционально отскалировали (увеличили) для ширины 578px */
+        }
+
+        #goal-demo-iframe {
+            width: 640px;
+            height: 500px;
+            transform: scale(0.8);
+        }
+
+        /* Адаптив для маленьких экранов */
+        @media (max-width: 1024px) {
+            /* Сбрасываем row-reverse в column, чтобы текст всегда был сверху на мобильных */
+            .split-section, .split-section.reversed { gap: 40px; padding: 100px 20px; flex-direction: column; flex-wrap: wrap; }
+            .split-text { text-align: center; max-width: 100%; }
+            .split-visual { 
+                width: 100%; 
+                justify-content: center; 
+            }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 24px 20px; }
+            .title-serif { font-size: 42px; }
+            .title-sans { font-size: 16px; }
+            #showcase-iframe { 
+                border-radius: 16px; 
+            }
+            
+            .final-title { font-size: 42px; }
+            .footer-content { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; } /* Применяем адаптив к новой обертке */
+
+            /* Чуть-чуть уменьшаем обертку, если экран совсем маленький */
+            .iframe-scaler {
+                transform: scale(0.9);
+                transform-origin: top center;
+                margin-bottom: -24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Фоновые элементы (Сетка и Свечение) -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+
+    <header>
+        <div class="logo">
+            <img src="https://static.tildacdn.com/tild3834-3039-4262-b262-336163643165/image_23_Vectorized.svg" alt="Logo">
+        </div>
+        <div class="auth-buttons">
+            <button class="btn-auth ghost">Log in</button>
+            <button class="btn-auth filled">Sign up</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Блок 1: Hero Section -->
+        <section class="hero">
+            <h1 class="fade-up">
+                <span class="title-serif">Smart Reading Journal</span>
+                <span class="title-sans">on any device</span>
+            </h1>
+            <p class="description">
+                Turn reading into lasting knowledge. Answer guided questions and let the journal automatically connect your ideas.
+            </p>
+            <a href="#" class="btn-primary">Start for free</a>
+        </section>
+
+        <!-- Блок 2: Showcase GIF Section (Вернули на место) -->
+        <section class="showcase-section">
+            <iframe id="showcase-iframe" frameborder="0" scrolling="no"></iframe>
+        </section>
+
+        <!-- Блок 3: Problem / Solution Split Section -->
+        <section class="split-section">
+            <div class="split-text">
+                <h2 class="split-heading fade-up">
+                    <span class="title-sans-medium">Read endlessly,</span><br>
+                    <span class="title-serif-medium">but forget instantly?</span>
+                </h2>
+                <p class="split-desc">
+                    Most reading notes become a graveyard of disconnected thoughts.<br>
+                    We guide your reflection process, helping you extract and retain the true value of every book long after you turn the last page.
+                </p>
+            </div>
+            <div class="split-visual">
+                <!-- Вторая гифка: Форма (обернута в scaler для масштабирования) -->
+                <div class="iframe-scaler">
+                    <iframe id="form-demo-iframe" scrolling="no"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- Блок 4: Smart Questions (Reversed) -->
+        <section class="split-section reversed">
+            <div class="split-text">
+                <h2 class="split-heading fade-up">
+                    <span class="title-sans-medium">Guided by</span><br>
+                    <span class="title-serif-medium">smart questions</span>
+                </h2>
+                <p class="split-desc">
+                    Never stare at a blank page again.<br>
+                    Our dynamic templates adapt to what you're reading.<br><br>
+                    Analyze frameworks in business books, or track character arcs in fiction — we prompt you with exactly what to look for.
+                </p>
+            </div>
+            <div class="split-visual">
+                <!-- Третья гифка: Выбор вопросов (добавлен класс tall) -->
+                <div class="iframe-scaler tall">
+                    <iframe id="questions-demo-iframe" scrolling="no"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- Блок 5: Zettelkasten -->
+        <section class="split-section">
+            <div class="split-text">
+                <h2 class="split-heading fade-up">
+                    <span class="title-sans-medium">Ideas that connect</span><br>
+                    <span class="title-serif-medium">automatically</span>
+                </h2>
+                <p class="split-desc">
+                    Experience a self-organizing knowledge base (Zettelkasten).<br><br>
+                    As you add notes, the system automatically discovers meaningful links between different books, growing your thoughts into a powerful, interconnected network of ideas.
+                </p>
+            </div>
+            <div class="split-visual">
+                <!-- Четвертая гифка: Картотека Zettelkasten -->
+                <div class="iframe-scaler zk-scaler">
+                    <iframe id="zk-demo-iframe" scrolling="no"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- Блок 6: Reading Goals (Новый блок) -->
+        <section class="split-section reversed">
+            <div class="split-text">
+                <h2 class="split-heading fade-up">
+                    <span class="title-sans-medium">Track your</span><br>
+                    <span class="title-serif-medium">reading goals</span>
+                </h2>
+                <p class="split-desc">
+                    Set a yearly reading challenge and watch your virtual shelf fill up.<br><br>
+                    Every completed book brings you closer to your target, keeping you motivated and consistent in your reading journey.
+                </p>
+            </div>
+            <div class="split-visual">
+                <!-- Пятая гифка: Цели -->
+                <div class="iframe-scaler goal-scaler">
+                    <iframe id="goal-demo-iframe" scrolling="no"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- Блок 7: Final CTA (бывший 6) -->
+        <div class="final-cta-wrapper">
+            <!-- Эффекты свечения и сетки для финала -->
+            <div class="final-bg-grid"></div>
+            <div class="final-bg-glow"></div>
+            <section class="final-cta">
+                <h2 class="final-title fade-up">
+                    Ready to build<br>your ultimate library?
+                </h2>
+                <a href="#" class="btn-primary">Start for free</a>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div>© 2026 Smart Reading Journal. A non-commercial pet project.</div>
+            <div style="display: flex; gap: 20px;">
+                <a href="#">Privacy Policy</a>
+                <a href="mailto:hello@example.com">Contact Developer</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Анимация мягкого появления заголовков при скролле
+        const fadeUpObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // Анимируем только один раз
+                }
+            });
+        }, { threshold: 0.15 }); // Срабатывает, когда 15% заголовка показалось на экране
+
+        document.querySelectorAll('.fade-up').forEach(el => fadeUpObserver.observe(el));
+
+        // Слушатель для динамического изменения высоты второго блока (Showcase)
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'resize-showcase') {
+                const iframe = document.getElementById('showcase-iframe');
+                if (iframe) {
+                    iframe.style.height = event.data.height + 'px';
+                }
+            }
+        });
+
+        // Код первой гифки (Интерфейс приложения) - Облегченная версия
+        const showcaseHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Journal - Shelf Showcase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tg-bg: #1A1A1C;
+            --tg-sec-bg: #2A2A2C;
+            --tg-text: #ffffff;
+            --tg-hint: #8E8E93;
+            --tg-accent: #8CD136; 
+            --rating-red: #D34C4C;
+            --rating-blue: #4C6CD3;
+            --rating-green: #2ECB5B;
+            --border-radius-card: 16px;
+            --border-radius-input: 12px;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: 'Montserrat', sans-serif; background-color: var(--tg-bg);
+            color: var(--tg-text); margin: 0; padding: 0;
+            display: flex; justify-content: center;
+            overflow-x: hidden; scrollbar-width: none; font-size: 12px; 
+            /* Убрали min-height: 100vh, чтобы тело плотно облегало контент */
+        }
+        body::-webkit-scrollbar { display: none; }
+        .app-container { width: 100%; max-width: 100%; display: flex; flex-direction: column; position: relative; } /* Убрали min-height: 100vh */
+        .top-nav { padding: 20px 40px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); background: var(--tg-bg); position: sticky; top: 0; z-index: 100; }
+        .nav-items-wrapper { display: flex; gap: 8px; flex: 1; overflow: hidden; }
+        .nav-item { padding: 8px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; background-color: var(--tg-sec-bg); color: rgba(142, 142, 147, 0.6); } /* Приглушили цвет меню */
+        .nav-item.active { background-color: var(--tg-text); color: #000; }
+        .search-container { padding: 20px 40px; }
+        .search-input { width: 100%; background: var(--tg-sec-bg); border: none; border-radius: var(--border-radius-input); padding: 14px 16px; color: var(--tg-text); font-size: 12px; font-weight: 400; }
+        .search-input::placeholder { color: rgba(142, 142, 147, 0.6); } /* Сравняли цвет плейсхолдера с меню */
+        
+        /* Жестко форсируем 6 колонок для десктопа, чтобы карточки всегда сжимались и вставали в один ряд */
+        .book-shelf { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; padding: 0 40px 40px 40px; }
+        @media (max-width: 600px) { .book-shelf { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px 20px 20px; } }
+        
+        .book-card { position: relative; opacity: 0; transform: translateX(-15px); }
+        .book-card.visible { opacity: 1; transform: translateX(0); }
+        .book-cover { width: 100%; aspect-ratio: 2/3; background-color: var(--tg-sec-bg); border-radius: var(--border-radius-card); overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .book-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .add-card { display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(142, 142, 147, 0.6); border: 1px solid rgba(255,255,255,0.06); height: 100%; text-align: center; } /* Приглушили текст на самой карточке Add Book */
+        .add-card .text { font-size: 12px; font-weight: 600; line-height: 1.3; }
+        .rating-badge { position: absolute; top: -6px; right: -6px; font-size: 9px; font-weight: 700; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; z-index: 10; border: 2px solid var(--tg-bg); }
+        .rating-green { background-color: var(--rating-green); }
+        .rating-blue { background-color: var(--rating-blue); }
+    </style>
+</head>
+<body>
+<div class="app-container" id="app-body">
+    <div class="top-nav" id="nav-bar">
+        <div class="nav-items-wrapper">
+            <div class="nav-item active" id="nav-all">All books</div>
+            <div class="nav-item">Rating</div>
+            <div class="nav-item">Months</div>
+            <div class="nav-item">Cards</div>
+        </div>
+        <div class="nav-item" id="btn-top-right" style="background: none; color: rgba(142, 142, 147, 0.6);">+ Book</div> <!-- Приглушили кнопку в правом верхнем углу -->
+    </div>
+    <div id="home-screen">
+        <div class="search-container"><input type="text" class="search-input" placeholder="Search by title or author..." readonly></div>
+        <div class="book-shelf">
+            <div class="book-card" id="card-add" style="opacity: 1; transform: none;"><div class="book-cover add-card"><div style="font-size:28px; margin-bottom: 4px;">+</div><div class="text">Add<br>book</div></div></div>
+            <div class="book-card" id="book-1"><div class="rating-badge rating-green">9.8</div><div class="book-cover"><img src="https://static.tildacdn.com/tild3033-6366-4166-a464-353938666266/211399784.jpg"></div></div>
+            <div class="book-card" id="book-2"><div class="rating-badge rating-green">8.5</div><div class="book-cover"><img src="https://static.tildacdn.com/tild3834-3764-4731-b136-356538316365/220207768.jpg"></div></div>
+            <div class="book-card" id="book-3"><div class="rating-badge rating-blue">7.2</div><div class="book-cover"><img src="https://static.tildacdn.com/tild6638-6131-4237-b361-383263306232/217245572.jpg"></div></div>
+            <div class="book-card" id="book-4"><div class="rating-badge rating-green">8.3</div><div class="book-cover"><img src="https://static.tildacdn.com/tild3033-6633-4363-a332-663437333866/a60527867d2034b0c53a.jpg"></div></div>
+            <!-- Заменили картинку 5-й книги -->
+            <div class="book-card" id="book-5"><div class="rating-badge rating-green">9.1</div><div class="book-cover"><img src="https://static.tildacdn.com/tild3866-3966-4261-b163-633762653163/5df6129c8ae3953143b8.jpg"></div></div>
+        </div>
+    </div>
+</div>
+<script>
+    // Функция-шпион: отправляет реальную высоту контента родительскому окну
+    const reportHeight = () => {
+        const height = document.getElementById('app-body').offsetHeight;
+        window.parent.postMessage({ type: 'resize-showcase', height: height }, '*');
+    };
+    
+    // Запускаем отслеживание высоты
+    window.addEventListener('load', reportHeight);
+    window.addEventListener('resize', reportHeight);
+    new ResizeObserver(reportHeight).observe(document.getElementById('app-body'));
+
+    async function runShowcase() {
+        const books = ['book-1', 'book-2', 'book-3', 'book-4', 'book-5'].map(id => document.getElementById(id));
+        while(true) {
+            // 1. Сброс
+            document.body.style.transition = 'none';
+            document.body.style.opacity = '1';
+            books.forEach(b => { 
+                b.style.transition = 'none'; 
+                b.classList.remove('visible'); 
+            });
+            
+            await new Promise(r => setTimeout(r, 800));
+
+            // 2. Плавное появление книг по очереди (Замедлено)
+            for (const b of books) { 
+                b.style.transition = 'opacity 1.2s ease, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)'; 
+                b.classList.add('visible'); 
+                await new Promise(r => setTimeout(r, 600)); // Увеличили паузу между появлением книг
+            }
+
+            // 3. Пауза, чтобы посмотреть на результат
+            await new Promise(r => setTimeout(r, 4000)); // Увеличили время просмотра собранной полки
+            
+            // 4. Плавное затухание всего блока
+            document.body.style.transition = 'opacity 1.2s ease';
+            document.body.style.opacity = '0';
+            
+            await new Promise(r => setTimeout(r, 1200)); 
+        }
+    }
+    window.onload = runShowcase;
+<\/script>
+</body></html>`;
+
+        // Код второй гифки (Форма добавления)
+        const formDemoHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Book Form - Filling Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tg-bg: #1A1A1C;
+            --tg-sec-bg: #2A2A2C;
+            --tg-text: #ffffff;
+            --tg-hint: #8E8E93;
+            --tg-accent: #8CD136; 
+            --border-radius-card: 16px;
+            --border-radius-input: 12px;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            outline: none;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: transparent; 
+            color: var(--tg-text);
+            margin: 0; padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .add-form { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 24px; 
+            width: 100%;
+            max-width: 760px; 
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .form-header-row { display: flex; gap: 30px; align-items: stretch; }
+        
+        .cover-upload { 
+            width: 180px; flex-shrink: 0; aspect-ratio: 2/3;
+            border-radius: var(--border-radius-card); background: #222;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            text-align: center; padding: 10px; color: var(--tg-hint); overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; position: relative;
+        }
+        .cover-upload.active-click { transform: scale(0.96); border-color: var(--tg-accent); }
+        .cover-upload img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.8s ease; z-index: 2; }
+        .cover-upload img.visible { opacity: 1; }
+        .cover-upload span { font-size: 12px; font-weight: 600; line-height: 1.4; }
+        
+        .form-inputs { flex: 1; display: flex; flex-direction: column; gap: 14px; width: 100%; justify-content: space-between; }
+        .form-inputs input { background: var(--tg-sec-bg); border: 1px solid transparent; border-radius: var(--border-radius-input); padding: 16px 20px; color: var(--tg-text); font-size: 14px; font-weight: 400; font-family: 'Montserrat', sans-serif; transition: all 0.2s ease; } /* Снизили жирность полей ввода до 400, размер 14px */
+        .form-inputs input.active-typing { background: #323234; box-shadow: 0 0 0 1px rgba(140, 209, 54, 0.3); }
+        .form-inputs input::placeholder { color: var(--tg-hint); font-weight: 400; }
+        
+        .form-date-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 14px; }
+        .custom-select-wrapper { position: relative; background: var(--tg-sec-bg); border-radius: var(--border-radius-input); transition: all 0.2s ease; }
+        .custom-select-wrapper.focused { background: #323234; box-shadow: 0 0 0 1px var(--tg-accent); }
+        .custom-select-wrapper select { width: 100%; background: transparent; border: none; padding: 16px 20px; color: var(--tg-text); font-size: 14px; font-weight: 400; appearance: none; font-family: 'Montserrat', sans-serif; } /* Снизили жирность селектов до 400, размер 14px */
+        .select-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 16px; height: 16px; opacity: 0.5; stroke: currentColor; }
+
+        .btn-full-width { width: 100%; padding: 18px; border-radius: var(--border-radius-input); font-size: 14px; font-weight: 600; text-align: center; border: none; background: var(--tg-sec-bg); color: var(--tg-text); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-family: 'Montserrat', sans-serif; margin-top: 10px; }
+        .btn-full-width.accent { background: var(--tg-accent); color: #1A1A1C; }
+        .btn-full-width.clicked { transform: scale(0.96); }
+
+        #cursor { position: fixed; width: 14px; height: 14px; background: #fff; border: 2px solid #000; border-radius: 50%; pointer-events: none; z-index: 9999; transition: top 0.7s cubic-bezier(0.19, 1, 0.22, 1), left 0.7s cubic-bezier(0.19, 1, 0.22, 1); display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
+        #cursor.clicking { transform: scale(0.8); background: var(--tg-accent); }
+        
+        @media (max-width: 500px) {
+            .form-header-row { flex-direction: column; align-items: center; }
+            .cover-upload { margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="cursor"></div>
+    <div class="add-form" id="main-form">
+        <div class="form-header-row">
+            <div class="cover-upload" id="cover-box">
+                <img id="book-img" src="https://static.tildacdn.com/tild3033-6366-4166-a464-353938666266/211399784.jpg" alt="Cover">
+                <div id="cover-placeholder" style="display: flex; flex-direction: column; align-items: center;">
+                    <span style="font-size: 32px; margin-bottom: 4px; font-weight: 300;">+</span><span>Add<br>cover</span>
+                </div>
+            </div>
+            <div class="form-inputs">
+                <input type="text" id="input-title" placeholder="Book title" readonly>
+                <input type="text" id="input-author" placeholder="Author" readonly>
+                <input type="text" id="input-genre" placeholder="Genre" readonly>
+                <input type="text" id="input-tags" placeholder="Hashtags" readonly>
+                <div class="form-date-row">
+                    <div class="custom-select-wrapper" id="wrap-month">
+                        <select id="select-month" disabled><option value="January">January</option><option value="February">February</option></select>
+                        <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="custom-select-wrapper" id="wrap-year">
+                        <select id="select-year" disabled><option value="2025">2025</option><option value="2026">2026</option></select>
+                        <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn-full-width accent" id="btn-save">Save notes</button>
+    </div>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        async function typeValue(id, text) { const el = document.getElementById(id); el.classList.add('active-typing'); el.value = ""; for (const char of text) { el.value += char; await new Promise(r => setTimeout(r, 50 + Math.random() * 40)); } await new Promise(r => setTimeout(r, 300)); el.classList.remove('active-typing'); }
+        async function performClick(id) {
+            const el = document.getElementById(id); const rect = el.getBoundingClientRect();
+            cursor.style.display = 'block'; cursor.style.left = (rect.left + rect.width / 2) + 'px'; cursor.style.top = (rect.top + rect.height / 2) + 'px';
+            await new Promise(r => setTimeout(r, 800)); cursor.classList.add('clicking');
+            if (id === 'cover-box') { document.getElementById('cover-box').classList.add('active-click'); await new Promise(r => setTimeout(r, 150)); document.getElementById('book-img').classList.add('visible'); document.getElementById('cover-placeholder').style.opacity = '0'; document.getElementById('cover-box').classList.remove('active-click'); }
+            if (id === 'btn-save') { el.classList.add('clicked'); await new Promise(r => setTimeout(r, 200)); el.classList.remove('clicked'); el.innerText = "Saved Successfully ✓"; }
+            await new Promise(r => setTimeout(r, 200)); cursor.classList.remove('clicking');
+        }
+        async function runDemo() {
+            document.getElementById('input-title').value = ""; document.getElementById('input-author').value = ""; document.getElementById('input-genre').value = ""; document.getElementById('input-tags').value = ""; document.getElementById('book-img').classList.remove('visible'); document.getElementById('cover-placeholder').style.opacity = '1'; document.getElementById('select-month').value = "January"; document.getElementById('select-year').value = "2025"; document.getElementById('btn-save').innerText = "Save notes"; cursor.style.display = 'none';
+            await new Promise(r => setTimeout(r, 1200));
+            await performClick('cover-box'); await new Promise(r => setTimeout(r, 400));
+            await performClick('input-title'); await typeValue('input-title', 'The Favorites');
+            await performClick('input-author'); await typeValue('input-author', 'Layne Fargo');
+            await performClick('input-genre'); await typeValue('input-genre', 'Romance, Fiction');
+            await performClick('input-tags'); await typeValue('input-tags', 'love');
+            await performClick('wrap-month'); document.getElementById('wrap-month').classList.add('focused'); await new Promise(r => setTimeout(r, 400)); document.getElementById('select-month').value = "February"; await new Promise(r => setTimeout(r, 500)); document.getElementById('wrap-month').classList.remove('focused');
+            await performClick('wrap-year'); document.getElementById('wrap-year').classList.add('focused'); await new Promise(r => setTimeout(r, 400)); document.getElementById('select-year').value = "2026"; await new Promise(r => setTimeout(r, 500)); document.getElementById('wrap-year').classList.remove('focused');
+            await performClick('btn-save');
+            await new Promise(r => setTimeout(r, 5000)); runDemo();
+        }
+        window.onload = runDemo;
+    <\/script>
+</body>
+</html>`;
+
+        // Код третьей гифки (Выбор вопросов)
+        const questionsDemoHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questions Selection - Smooth GIF Loop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tg-bg: #1A1A1C;
+            --tg-sec-bg: #2A2A2C;
+            --tg-text: #ffffff;
+            --tg-hint: #8E8E93;
+            --tg-accent: #8CD136; 
+            --border-radius-card: 16px;
+            --border-radius-input: 12px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: transparent; /* Сделали фон прозрачным */
+            color: var(--tg-text);
+            margin: 0; padding: 40px 20px;
+            display: flex; justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container { width: 100%; max-width: 700px; }
+
+        .group-title { 
+            font-size: 18px; font-weight: 700; margin: 0 0 24px 0; 
+            display: flex; align-items: center; gap: 12px; 
+        }
+        .group-title::before {
+            content: ''; display: block; width: 3px; height: 18px;
+            background-color: var(--tg-accent); border-radius: 2px;
+        }
+
+        /* Облако вопросов */
+        .questions-cloud { 
+            display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; 
+        }
+        
+        .q-chip { 
+            padding: 12px 20px; background: var(--tg-sec-bg); border-radius: 24px; 
+            font-size: 13px; font-weight: 600; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; align-items: center; gap: 8px; border: 1px solid transparent;
+            color: var(--tg-text);
+            white-space: nowrap;
+            overflow: hidden;
+            max-width: 500px;
+        }
+        
+        .q-chip.selected { 
+            background: var(--tg-accent); color: #1A1A1C; 
+        }
+
+        .q-chip::before {
+            content: '+'; font-size: 18px; font-weight: 400; opacity: 0.8;
+        }
+        .q-chip.selected::before {
+            content: '✓'; font-weight: 700;
+        }
+
+        /* Кнопка генерации: сплошная рамка и 10% лаймовая заливка */
+        .q-chip.generate-btn {
+            background: rgba(140, 209, 54, 0.1); 
+            color: var(--tg-accent); 
+            border: 1px solid var(--tg-accent);
+        }
+        .q-chip.generate-btn::before { content: '🎲'; font-size: 16px; margin-right: 4px; }
+        .q-chip.generate-btn.clicked { transform: scale(0.95); background: rgba(140, 209, 54, 0.2); }
+
+        /* Поле ввода */
+        #selected-questions { margin-top: 24px; }
+        .q-item { 
+            background: var(--tg-sec-bg); border-radius: var(--border-radius-card); padding: 24px; 
+            margin-bottom: 20px; animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Эффект исчезновения ("сгорания") и плавного возврата кнопки */
+        .q-item.vanishing {
+            opacity: 0;
+            transform: scale(0.95) translateY(-20px);
+            filter: blur(8px);
+        }
+
+        .generated-q.vanishing {
+            opacity: 0;
+            max-width: 0;
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: -12px; /* Компенсация gap */
+            transform: scale(0);
+            border-width: 0;
+        }
+
+        .q-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .q-item label { font-size: 14px; font-weight: 600; color: var(--tg-hint); }
+        
+        .textarea-wrapper {
+            position: relative; padding-left: 16px;
+        }
+        .textarea-wrapper::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 2px; background-color: var(--tg-accent); border-radius: 2px;
+        }
+
+        .q-item textarea { 
+            width: 100%; background: transparent; border: none; 
+            color: var(--tg-text); font-size: 14px; resize: none; /* Уменьшили до 14px */
+            min-height: 100px; line-height: 1.6; font-family: inherit;
+            padding: 0; font-weight: 400; /* Убрали жирность */
+        }
+
+        .delete-icon { 
+            color: var(--tg-accent); width: 32px; height: 32px; 
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; transition: background 0.2s;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Виртуальный курсор */
+        #cursor {
+            position: fixed; width: 14px; height: 14px; background: #fff;
+            border: 2px solid #000; border-radius: 50%; pointer-events: none;
+            z-index: 9999; transition: top 0.6s cubic-bezier(0.19, 1, 0.22, 1), left 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+        #cursor.clicking { transform: scale(0.8); background: var(--tg-accent); }
+    </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div class="container">
+    <div class="group-title">Notes & Thoughts</div>
+    
+    <div class="questions-cloud" id="q-cloud">
+        <div class="q-chip" id="chip-main">What is this book about?</div>
+        <div class="q-chip">Insight (main thought)</div>
+        <div class="q-chip">Emotion (what I felt)</div>
+        <div class="q-chip">Action (what I'll do differently)</div>
+        <div class="q-chip">Which quote hits the mark?</div>
+        <div class="q-chip">Who should read it and why?</div>
+        <div class="q-chip generate-btn" id="btn-gen">Generate more questions</div>
+    </div>
+
+    <div id="selected-questions"></div>
+</div>
+
+<script>
+    const cursor = document.getElementById('cursor');
+    const shortenedText = "Katarina Shaw has always known she was destined to be an Olympic skater. When she meets Heath Rocha, their instant connection makes them a formidable duo. Together, they escape their turbulent lives to become champion ice dancers.";
+
+    async function moveAndClick(elementId, isDirectElement = false) {
+        const el = isDirectElement ? elementId : document.getElementById(elementId);
+        const rect = el.getBoundingClientRect();
+        cursor.style.display = 'block';
+        cursor.style.left = (rect.left + rect.width / 2) + 'px';
+        cursor.style.top = (rect.top + rect.height / 2) + 'px';
+        
+        await new Promise(r => setTimeout(r, 700));
+        cursor.classList.add('clicking');
+        
+        if(!isDirectElement && elementId === 'btn-gen') {
+            el.classList.add('clicked');
+            const extra = ["What is the main conflict?", "Final expectations?"];
+            const cloud = document.getElementById('q-cloud');
+            extra.forEach(q => {
+                const div = document.createElement('div');
+                div.className = 'q-chip generated-q';
+                div.innerText = q;
+                cloud.insertBefore(div, el);
+            });
+            await new Promise(r => setTimeout(r, 200));
+            el.classList.remove('clicked');
+        }
+
+        if(!isDirectElement && elementId === 'chip-main') {
+            el.classList.add('selected');
+            const container = document.getElementById('selected-questions');
+            const div = document.createElement('div');
+            div.className = 'q-item';
+            div.id = 'active-answer';
+            div.innerHTML = \`
+                <div class="q-header-row">
+                    <label>What is this book about?</label>
+                    <div class="delete-icon" id="btn-delete-answer">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                    </div>
+                </div>
+                <div class="textarea-wrapper">
+                    <textarea id="main-textarea" placeholder="Write your answer..." readonly></textarea>
+                </div>
+            \`;
+            container.appendChild(div);
+        }
+
+        await new Promise(r => setTimeout(r, 200));
+        cursor.classList.remove('clicking');
+    }
+
+    async function typeText(text) {
+        const ta = document.getElementById('main-textarea');
+        if (!ta) return;
+        for (const char of text) {
+            ta.value += char;
+            ta.scrollTop = ta.scrollHeight;
+            await new Promise(r => setTimeout(r, 15 + Math.random() * 20));
+        }
+    }
+
+    async function runGIFLoop() {
+        while(true) {
+            document.getElementById('selected-questions').innerHTML = '';
+            document.getElementById('chip-main').classList.remove('selected');
+            document.querySelectorAll('.generated-q').forEach(q => q.remove());
+            cursor.style.display = 'none';
+            
+            await new Promise(r => setTimeout(r, 800));
+            await moveAndClick('btn-gen');
+            await new Promise(r => setTimeout(r, 600));
+            await moveAndClick('chip-main');
+            await new Promise(r => setTimeout(r, 400));
+            
+            const ta = document.getElementById('main-textarea');
+            if (ta) { await typeText(shortenedText); }
+            await new Promise(r => setTimeout(r, 1200));
+
+            const btnDelete = document.getElementById('btn-delete-answer');
+            if (btnDelete) {
+                await moveAndClick(btnDelete, true);
+                
+                const activeAnswer = document.getElementById('active-answer');
+                const generatedQs = document.querySelectorAll('.generated-q');
+                
+                activeAnswer.classList.add('vanishing');
+                generatedQs.forEach(q => q.classList.add('vanishing'));
+                document.getElementById('chip-main').classList.remove('selected');
+
+                await new Promise(r => setTimeout(r, 600));
+            }
+            
+            await new Promise(r => setTimeout(r, 400));
+        }
+    }
+
+    window.onload = runGIFLoop;
+    <\/script>
+</body>
+</html>`;
+
+        // Код четвертой гифки (Zettelkasten) - Исправленный и полностью рабочий код
+        const zkDemoHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zettelkasten Expansion - Neural Web</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tg-bg: #1A1A1C;
+            --tg-sec-bg: #2A2A2C;
+            --tg-text: #ffffff;
+            --tg-hint: #8E8E93;
+            --tg-accent: #8CD136; 
+            --border-radius-card: 16px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: transparent; 
+            color: var(--tg-text);
+            margin: 0; padding: 0;
+            width: 100vw; height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* SVG Линии связей */
+        #network-lines {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .zk-line {
+            stroke: var(--tg-accent);
+            stroke-width: 2;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            opacity: 0;
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+        }
+        
+        .zk-line.drawn {
+            stroke-dashoffset: 0;
+            opacity: 0.4;
+        }
+
+        /* Карточки */
+        .zk-card { 
+            background: var(--tg-sec-bg); 
+            border-radius: var(--border-radius-card); 
+            padding: 20px; 
+            position: absolute; 
+            width: 320px;
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3); 
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            border: 1px solid rgba(255,255,255,0.05);
+            z-index: 2;
+        }
+
+        /* Состояния главной карточки */
+        #card-main {
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(1.1);
+            z-index: 10;
+        }
+        
+        #card-main.network-view {
+            top: 27%; left: 28%; /* Немного сдвинули по Y для крупных карточек */
+            transform: translate(-50%, -50%) scale(1); /* Увеличили масштаб с 0.85 до 1 */
+            border-color: var(--tg-accent);
+            box-shadow: 0 0 20px rgba(140, 209, 54, 0.2);
+        }
+
+        /* Состояния связанных карточек */
+        .related-card {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        #card-r1 { top: 27%; left: 72%; transform: translate(-50%, -50%) scale(0.6); }
+        #card-r2 { top: 73%; left: 28%; transform: translate(-50%, -50%) scale(0.6); }
+        #card-r3 { top: 73%; left: 72%; transform: translate(-50%, -50%) scale(0.6); }
+
+        .related-card.visible {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1) !important; /* Увеличили масштаб с 0.85 до 1 */
+        }
+
+        /* Внутренности карточек */
+        .zk-card-header { display: flex; justify-content: space-between; color: var(--tg-hint); font-size: 12px; font-weight: 500; font-family: monospace; }
+        .zk-card-q { font-size: 13px; color: var(--tg-accent); font-weight: 600; }
+        .zk-card-a { font-size: 14px; line-height: 1.5; color: var(--tg-text); }
+        .zk-card-footer { font-size: 11px; color: rgba(255,255,255,0.4); font-style: italic; margin-top: 4px; }
+
+        /* Кнопка связей на главной карточке */
+        .zk-links-btn {
+            background: rgba(140, 209, 54, 0.1);
+            color: var(--tg-accent);
+            border: 1px solid rgba(140, 209, 54, 0.3);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex; align-items: center; gap: 6px;
+            cursor: pointer;
+            width: fit-content;
+            margin-top: 4px;
+            transition: all 0.2s ease;
+        }
+        .zk-links-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+        .zk-links-btn.active { background: var(--tg-accent); color: #000; transform: scale(0.95); }
+
+        /* Виртуальный курсор */
+        #cursor {
+            position: fixed; width: 14px; height: 14px; background: #fff;
+            border: 2px solid #000; border-radius: 50%; pointer-events: none;
+            z-index: 9999; transition: top 0.7s cubic-bezier(0.19, 1, 0.22, 1), left 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+            display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+        #cursor.clicking { transform: scale(0.8); background: var(--tg-accent); }
+    </style>
+</head>
+<body>
+
+<svg id="network-lines">
+    <line x1="28%" y1="27%" x2="72%" y2="27%" class="zk-line" id="line-1" />
+    <line x1="28%" y1="27%" x2="28%" y2="73%" class="zk-line" id="line-2" />
+    <line x1="28%" y1="27%" x2="72%" y2="73%" class="zk-line" id="line-3" />
+    <line x1="72%" y1="27%" x2="72%" y2="73%" class="zk-line" id="line-4" />
+</svg>
+
+<div id="cursor"></div>
+
+<div class="zk-card" id="card-main">
+    <div class="zk-card-header"><span>#00101</span></div>
+    <div class="zk-card-q">System vs Goal</div>
+    <div class="zk-card-a">Consistency in a system is more powerful than focusing on a singular end result. Goals are for planning, systems are for building.</div>
+    <div class="zk-links-btn" id="btn-show-links">
+        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        3 Linked Notes
+    </div>
+    <div class="zk-card-footer">"Atomic Habits" by James Clear</div>
+</div>
+
+<div class="zk-card related-card" id="card-r1">
+    <div class="zk-card-header"><span>#00042</span></div>
+    <div class="zk-card-q">Focus as a System</div>
+    <div class="zk-card-a">Deep work isn't about willpower. It's about engineering a system where distraction becomes harder than focusing.</div>
+    <div class="zk-card-footer">"Deep Work" by Cal Newport</div>
+</div>
+
+<div class="zk-card related-card" id="card-r2">
+    <div class="zk-card-header"><span>#00087</span></div>
+    <div class="zk-card-q">Cue & Routine</div>
+    <div class="zk-card-a">You cannot extinguish a bad habit, you can only change it. Keep the old cue, deliver the old reward, but insert a new routine.</div>
+    <div class="zk-card-footer">"The Power of Habit" by Charles Duhigg</div>
+</div>
+
+<div class="zk-card related-card" id="card-r3">
+    <div class="zk-card-header"><span>#00156</span></div>
+    <div class="zk-card-q">System 1 & System 2</div>
+    <div class="zk-card-a">We build habits to offload processing from the energy-hungry System 2 (logic) to the automatic System 1 (instinct).</div>
+    <div class="zk-card-footer">"Thinking, Fast and Slow" by Daniel Kahneman</div>
+</div>
+
+<script>
+    const cursor = document.getElementById('cursor');
+    const cardMain = document.getElementById('card-main');
+    const btnLinks = document.getElementById('btn-show-links');
+    const relatedCards = document.querySelectorAll('.related-card');
+    const lines = document.querySelectorAll('.zk-line');
+
+    async function runNetworkDemo() {
+        while(true) {
+            cardMain.classList.remove('network-view');
+            relatedCards.forEach(c => c.classList.remove('visible'));
+            lines.forEach(l => l.classList.remove('drawn'));
+            cursor.style.display = 'none';
+            cursor.style.left = '-100px';
+            
+            await new Promise(r => setTimeout(r, 1500));
+
+            const rect = btnLinks.getBoundingClientRect();
+            cursor.style.display = 'block';
+            cursor.style.left = (rect.left + rect.width / 2) + 'px';
+            cursor.style.top = (rect.top + rect.height / 2) + 'px';
+            
+            await new Promise(r => setTimeout(r, 800));
+            
+            cursor.classList.add('clicking');
+            btnLinks.classList.add('active');
+            await new Promise(r => setTimeout(r, 200));
+            cursor.classList.remove('clicking');
+            btnLinks.classList.remove('active');
+
+            cursor.style.left = '110vw'; 
+
+            cardMain.classList.add('network-view');
+            
+            await new Promise(r => setTimeout(r, 300));
+            document.getElementById('card-r1').classList.add('visible');
+            await new Promise(r => setTimeout(r, 150));
+            document.getElementById('card-r2').classList.add('visible');
+            await new Promise(r => setTimeout(r, 150));
+            document.getElementById('card-r3').classList.add('visible');
+
+            await new Promise(r => setTimeout(r, 400));
+            lines.forEach(l => l.classList.add('drawn'));
+
+            await new Promise(r => setTimeout(r, 5000));
+            
+            document.body.style.transition = 'opacity 0.8s ease';
+            document.body.style.opacity = '0';
+            
+            await new Promise(r => setTimeout(r, 1000));
+            
+            document.body.style.opacity = '1';
+        }
+    }
+
+    window.onload = runNetworkDemo;
+<\/script>
+</body>
+</html>`;
+
+        // Вставляем первую гифку (Showcase)
+        const showcaseBlob = new Blob([showcaseHtml], { type: 'text/html' });
+        document.getElementById('showcase-iframe').src = URL.createObjectURL(showcaseBlob);
+
+        // Вставляем вторую гифку (Форма добавления)
+        const formDemoBlob = new Blob([formDemoHtml], { type: 'text/html' });
+        document.getElementById('form-demo-iframe').src = URL.createObjectURL(formDemoBlob);
+
+        // Вставляем третью гифку (Выбор вопросов)
+        const questionsDemoBlob = new Blob([questionsDemoHtml], { type: 'text/html' });
+        document.getElementById('questions-demo-iframe').src = URL.createObjectURL(questionsDemoBlob);
+
+        // Вставляем четвертую гифку (Zettelkasten)
+        const zkDemoBlob = new Blob([zkDemoHtml], { type: 'text/html' });
+        document.getElementById('zk-demo-iframe').src = URL.createObjectURL(zkDemoBlob);
+
+        // Код пятой гифки (Reading Goals)
+        const goalDemoHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Goal Progress - Showcase</title>
+    <!-- Подключаем шрифт Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tg-bg: #1A1A1C;
+            --tg-sec-bg: #2A2A2C;
+            --tg-text: #ffffff;
+            --tg-hint: #8E8E93;
+            --tg-accent: #8CD136; 
+            --border-radius-card: 12px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: transparent; /* Сделали прозрачным для бесшовной вставки */
+            color: var(--tg-text);
+            margin: 0; padding: 40px 20px;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .goal-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            text-align: center;
+        }
+
+        /* Сетка слотов цели */
+        .goal-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            width: 100%;
+        }
+
+        .goal-slot {
+            aspect-ratio: 2/3;
+            background: var(--tg-sec-bg);
+            border-radius: var(--border-radius-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--tg-hint);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .goal-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+            opacity: 0;
+            transform: scale(1.1);
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Состояние заполненного слота */
+        .goal-slot.filled {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .goal-slot.filled img {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Текст прогресса внизу */
+        .goal-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-height: 50px;
+        }
+
+        .footer-main {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            transition: color 0.5s;
+        }
+
+        .footer-sub {
+            font-size: 13px;
+            color: var(--tg-hint);
+            font-weight: 500;
+        }
+
+        .goal-reached {
+            color: var(--tg-accent) !important;
+        }
+
+        .autoplay-tag {
+            position: fixed; bottom: 20px; font-size: 9px; color: var(--tg-hint);
+            text-transform: uppercase; letter-spacing: 3px; opacity: 0.4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="goal-container">
+    <!-- Сетка из 10 слотов -->
+    <div class="goal-grid" id="goal-grid">
+        <div class="goal-slot">1</div>
+        <div class="goal-slot">2</div>
+        <div class="goal-slot">3</div>
+        <div class="goal-slot">4</div>
+        <div class="goal-slot">5</div>
+        <div class="goal-slot">6</div>
+        <div class="goal-slot">7</div>
+        <div class="goal-slot">8</div>
+        <div class="goal-slot">9</div>
+        <div class="goal-slot">10</div>
+    </div>
+
+    <div class="goal-footer">
+        <div class="footer-main" id="status-main">10 books left to goal!</div>
+        <div class="footer-sub" id="status-sub">Keep reading to reach your goal</div>
+    </div>
+</div>
+
+<div class="autoplay-tag">Achievement Showcase</div>
+
+<script>
+    const covers = [
+        "https://static.tildacdn.com/tild3033-6366-4166-a464-353938666266/211399784.jpg",
+        "https://static.tildacdn.com/tild3834-3764-4731-b136-356538316365/220207768.jpg",
+        "https://static.tildacdn.com/tild6638-6131-4237-b361-383263306232/217245572.jpg",
+        "https://static.tildacdn.com/tild3033-6633-4363-a332-663437333866/a60527867d2034b0c53a.jpg",
+        "https://static.tildacdn.com/tild3362-6134-4464-b138-373865666462/220817728.jpg",
+        "https://static.tildacdn.com/tild6237-3661-4534-a339-373230343837/223001257.jpg",
+        "https://static.tildacdn.com/tild3866-3966-4261-b163-633762653163/5df6129c8ae3953143b8.jpg",
+        "https://static.tildacdn.com/tild3661-3736-4965-b634-643064636666/-12.jpg",
+        "https://static.tildacdn.com/tild3861-3037-4233-a139-313962353431/-13.jpg",
+        "https://static.tildacdn.com/tild6339-6132-4933-b830-386663663430/-14.jpg"
+    ];
+
+    async function runGoalDemo() {
+        const grid = document.getElementById('goal-grid');
+        const slots = document.querySelectorAll('.goal-slot');
+        const statusMain = document.getElementById('status-main');
+        const statusSub = document.getElementById('status-sub');
+
+        while(true) {
+            // 1. Сброс
+            statusMain.classList.remove('goal-reached');
+            statusMain.innerText = "10 books left to goal!";
+            statusSub.innerText = "Keep reading to reach your goal";
+            
+            slots.forEach(slot => {
+                slot.classList.remove('filled');
+                const img = slot.querySelector('img');
+                if (img) img.remove();
+            });
+
+            await new Promise(r => setTimeout(r, 1500));
+
+            // 2. Постепенное заполнение
+            for (let i = 0; i < slots.length; i++) {
+                const slot = slots[i];
+                const imgUrl = covers[i]; 
+                
+                const img = document.createElement('img');
+                img.src = imgUrl;
+                slot.appendChild(img);
+                
+                await new Promise(r => setTimeout(r, 50));
+                slot.classList.add('filled');
+
+                const left = slots.length - (i + 1);
+                if (left > 0) {
+                    statusMain.innerText = \`\${left} books left to goal!\`;
+                } else {
+                    statusMain.innerText = "Goal reached! 🎉";
+                    statusMain.classList.add('goal-reached');
+                    statusSub.innerText = "You have read 10 books this year.";
+                }
+
+                await new Promise(r => setTimeout(r, 400));
+            }
+
+            await new Promise(r => setTimeout(r, 5000));
+            
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 1s ease';
+            await new Promise(r => setTimeout(r, 1000));
+            document.body.style.opacity = '1';
+        }
+    }
+
+    window.onload = runGoalDemo;
+<\/script>
+</body>
+</html>`;
+
+        // Вставляем пятую гифку (Reading Goals)
+        const goalDemoBlob = new Blob([goalDemoHtml], { type: 'text/html' });
+        document.getElementById('goal-demo-iframe').src = URL.createObjectURL(goalDemoBlob);
+
+    </script>
+</body>
+</html>
