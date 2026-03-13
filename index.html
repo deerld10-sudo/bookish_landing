@@ -833,8 +833,8 @@
         /* Сетка для гифки полки */
         .book-shelf { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; padding: 0 40px 40px 40px; }
         
-        @media (max-width: 800px) { 
-            /* Делаем сетку 3 книги в 2 ряда */
+        @media (max-width: 600px) { 
+            /* Делаем сетку 3 книги в 2 ряда (Срабатывает только на телефонах) */
             .book-shelf { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px 20px 20px; } 
             .nav-items-wrapper { display: none; } /* Прячем текст-кнопки */
             .hamburger-btn {
@@ -927,13 +927,13 @@
             }
 
             // 3. Пауза, чтобы посмотреть на результат
-            await new Promise(r => setTimeout(r, 3500)); // Увеличили паузу в конце
+            await new Promise(r => setTimeout(r, 2500)); // Сократили паузу в конце
             
             // 4. Плавное затухание всего блока
-            document.body.style.transition = 'opacity 1.2s ease';
+            document.body.style.transition = 'opacity 0.8s ease';
             document.body.style.opacity = '0';
             
-            await new Promise(r => setTimeout(r, 1200)); 
+            await new Promise(r => setTimeout(r, 800)); 
         }
     }
     // Запускаем напрямую через таймаут (обходим баг iOS Safari с window.onload внутри iframe)
@@ -1075,7 +1075,7 @@
         }
         async function runDemo() {
             document.getElementById('input-title').value = ""; document.getElementById('input-author').value = ""; document.getElementById('input-genre').value = ""; document.getElementById('input-tags').value = ""; document.getElementById('book-img').classList.remove('visible'); document.getElementById('cover-placeholder').style.opacity = '1'; document.getElementById('select-month').value = "January"; document.getElementById('select-year').value = "2025"; document.getElementById('btn-save').innerText = "Save notes"; cursor.style.display = 'none';
-            await new Promise(r => setTimeout(r, 1200));
+            await new Promise(r => setTimeout(r, 800));
             await performClick('cover-box'); await new Promise(r => setTimeout(r, 400));
             await performClick('input-title'); await typeValue('input-title', 'The Favorites');
             await performClick('input-author'); await typeValue('input-author', 'Layne Fargo');
@@ -1084,7 +1084,7 @@
             await performClick('wrap-month'); document.getElementById('wrap-month').classList.add('focused'); await new Promise(r => setTimeout(r, 400)); document.getElementById('select-month').value = "February"; await new Promise(r => setTimeout(r, 600)); document.getElementById('wrap-month').classList.remove('focused');
             await performClick('wrap-year'); document.getElementById('wrap-year').classList.add('focused'); await new Promise(r => setTimeout(r, 400)); document.getElementById('select-year').value = "2026"; await new Promise(r => setTimeout(r, 600)); document.getElementById('wrap-year').classList.remove('focused');
             await performClick('btn-save');
-            await new Promise(r => setTimeout(r, 4000)); runDemo();
+            await new Promise(r => setTimeout(r, 2800)); runDemo();
         }
         setTimeout(runDemo, 150);
     <\/script>
@@ -1319,7 +1319,7 @@
             document.querySelectorAll('.generated-q').forEach(q => q.remove());
             cursor.style.display = 'none';
             
-            await new Promise(r => setTimeout(r, 1000));
+            await new Promise(r => setTimeout(r, 600));
             await moveAndClick('btn-gen');
             await new Promise(r => setTimeout(r, 600));
             await moveAndClick('chip-main');
@@ -1327,7 +1327,7 @@
             
             const ta = document.getElementById('main-textarea');
             if (ta) { await typeText(shortenedText); }
-            await new Promise(r => setTimeout(r, 1500));
+            await new Promise(r => setTimeout(r, 1000));
 
             const btnDelete = document.getElementById('btn-delete-answer');
             if (btnDelete) {
@@ -1343,7 +1343,7 @@
                 await new Promise(r => setTimeout(r, 600));
             }
             
-            await new Promise(r => setTimeout(r, 500));
+            await new Promise(r => setTimeout(r, 200));
         }
     }
 
@@ -1542,7 +1542,7 @@
             cursor.style.display = 'none';
             cursor.style.left = '-100px';
             
-            await new Promise(r => setTimeout(r, 1200));
+            await new Promise(r => setTimeout(r, 600));
 
             const rect = btnLinks.getBoundingClientRect();
             cursor.style.display = 'block';
@@ -1571,12 +1571,12 @@
             await new Promise(r => setTimeout(r, 400));
             lines.forEach(l => l.classList.add('drawn'));
 
-            await new Promise(r => setTimeout(r, 4500));
+            await new Promise(r => setTimeout(r, 3000));
             
             document.body.style.transition = 'opacity 0.8s ease';
             document.body.style.opacity = '0';
             
-            await new Promise(r => setTimeout(r, 1000));
+            await new Promise(r => setTimeout(r, 800));
             
             document.body.style.opacity = '1';
         }
@@ -1770,7 +1770,7 @@
                 if (img) img.remove();
             });
 
-            await new Promise(r => setTimeout(r, 1200));
+            await new Promise(r => setTimeout(r, 600));
 
             // 2. Постепенное заполнение
             for (let i = 0; i < slots.length; i++) {
@@ -1796,11 +1796,11 @@
                 await new Promise(r => setTimeout(r, 400));
             }
 
-            await new Promise(r => setTimeout(r, 4500));
+            await new Promise(r => setTimeout(r, 3000));
             
             document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 1s ease';
-            await new Promise(r => setTimeout(r, 1200));
+            document.body.style.transition = 'opacity 0.8s ease';
+            await new Promise(r => setTimeout(r, 800));
             document.body.style.opacity = '1';
         }
     }
