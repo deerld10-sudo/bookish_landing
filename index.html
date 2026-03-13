@@ -441,6 +441,11 @@
             transform: translateY(0);
         }
 
+        /* Задержка для каскадного появления текста после заголовка */
+        .fade-delay {
+            transition-delay: 0.15s;
+        }
+
         /* Разделяем стили масштабирования для разных iframe */
         #form-demo-iframe, #questions-demo-iframe, #zk-demo-iframe, #goal-demo-iframe {
             position: absolute;
@@ -602,14 +607,14 @@
                 <span class="title-serif">Smart Reading Journal</span>
                 <span class="title-sans">on any device</span>
             </h1>
-            <p class="description">
+            <p class="description fade-up fade-delay">
                 Turn reading into lasting knowledge. Answer guided questions and let the journal automatically connect your ideas.
             </p>
-            <a href="#" class="btn-primary">Start for free</a>
+            <a href="#" class="btn-primary fade-up" style="transition-delay: 0.3s;">Start for free</a>
         </section>
 
         <!-- Блок 2: Showcase GIF Section (Вернули на место) -->
-        <section class="showcase-section">
+        <section class="showcase-section fade-up fade-delay">
             <iframe id="showcase-iframe" frameborder="0" scrolling="no"></iframe>
         </section>
 
@@ -620,12 +625,12 @@
                     <span class="title-sans-medium">Read endlessly,</span><br>
                     <span class="title-serif-medium">but forget instantly?</span>
                 </h2>
-                <p class="split-desc">
+                <p class="split-desc fade-up fade-delay">
                     Most reading notes become a graveyard of disconnected thoughts.<br>
                     We guide your reflection process, helping you extract and retain the true value of every book long after you turn the last page.
                 </p>
             </div>
-            <div class="split-visual">
+            <div class="split-visual fade-up fade-delay">
                 <!-- Вторая гифка: Форма (обернута в scaler для масштабирования) -->
                 <div class="iframe-scaler">
                     <iframe id="form-demo-iframe" scrolling="no"></iframe>
@@ -640,13 +645,13 @@
                     <span class="title-sans-medium">Guided by</span><br>
                     <span class="title-serif-medium">smart questions</span>
                 </h2>
-                <p class="split-desc">
+                <p class="split-desc fade-up fade-delay">
                     Never stare at a blank page again.<br>
                     Our dynamic templates adapt to what you're reading.<br><br>
                     Analyze frameworks in business books, or track character arcs in fiction — we prompt you with exactly what to look for.
                 </p>
             </div>
-            <div class="split-visual">
+            <div class="split-visual fade-up fade-delay">
                 <!-- Третья гифка: Выбор вопросов (добавлен класс tall) -->
                 <div class="iframe-scaler tall">
                     <iframe id="questions-demo-iframe" scrolling="no"></iframe>
@@ -661,12 +666,12 @@
                     <span class="title-sans-medium">Ideas that connect</span><br>
                     <span class="title-serif-medium">automatically</span>
                 </h2>
-                <p class="split-desc">
+                <p class="split-desc fade-up fade-delay">
                     Experience a self-organizing knowledge base (Zettelkasten).<br><br>
                     As you add notes, the system automatically discovers meaningful links between different books, growing your thoughts into a powerful, interconnected network of ideas.
                 </p>
             </div>
-            <div class="split-visual">
+            <div class="split-visual fade-up fade-delay">
                 <!-- Четвертая гифка: Картотека Zettelkasten -->
                 <div class="iframe-scaler zk-scaler">
                     <iframe id="zk-demo-iframe" scrolling="no"></iframe>
@@ -681,12 +686,12 @@
                     <span class="title-sans-medium">Track your</span><br>
                     <span class="title-serif-medium">reading goals</span>
                 </h2>
-                <p class="split-desc">
+                <p class="split-desc fade-up fade-delay">
                     Set a yearly reading challenge and watch your virtual shelf fill up.<br><br>
                     Every completed book brings you closer to your target, keeping you motivated and consistent in your reading journey.
                 </p>
             </div>
-            <div class="split-visual">
+            <div class="split-visual fade-up fade-delay">
                 <!-- Пятая гифка: Цели -->
                 <div class="iframe-scaler goal-scaler">
                     <iframe id="goal-demo-iframe" scrolling="no"></iframe>
@@ -703,7 +708,7 @@
                 <h2 class="final-title fade-up">
                     Ready to build<br>your ultimate library?
                 </h2>
-                <a href="#" class="btn-primary">Start for free</a>
+                <a href="#" class="btn-primary fade-up fade-delay">Start for free</a>
             </section>
         </div>
     </main>
@@ -728,7 +733,7 @@
                     observer.unobserve(entry.target); // Анимируем только один раз
                 }
             });
-        }, { threshold: 0.15 }); // Срабатывает, когда 15% заголовка показалось на экране
+        }, { threshold: 0.1 }); // Уменьшили порог срабатывания до 0.1 для мобильных устройств
 
         document.querySelectorAll('.fade-up').forEach(el => fadeUpObserver.observe(el));
 
@@ -912,23 +917,23 @@
                 b.classList.remove('visible'); 
             });
             
-            await new Promise(r => setTimeout(r, 500));
+            await new Promise(r => setTimeout(r, 800)); // Замедлили начальную паузу
 
             // 2. Плавное появление книг по очереди (Замедлено)
             for (const b of books) { 
-                b.style.transition = 'opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)'; 
+                b.style.transition = 'opacity 1s ease, transform 1s cubic-bezier(0.2, 0.8, 0.2, 1)'; 
                 b.classList.add('visible'); 
-                await new Promise(r => setTimeout(r, 300)); // Ускорили появление книг
+                await new Promise(r => setTimeout(r, 500)); // Замедлили появление книг
             }
 
             // 3. Пауза, чтобы посмотреть на результат
-            await new Promise(r => setTimeout(r, 2500)); // Сократили паузу в конце
+            await new Promise(r => setTimeout(r, 3500)); // Увеличили паузу в конце
             
             // 4. Плавное затухание всего блока
-            document.body.style.transition = 'opacity 0.8s ease';
+            document.body.style.transition = 'opacity 1.2s ease';
             document.body.style.opacity = '0';
             
-            await new Promise(r => setTimeout(r, 800)); 
+            await new Promise(r => setTimeout(r, 1200)); 
         }
     }
     // Запускаем напрямую через таймаут (обходим баг iOS Safari с window.onload внутри iframe)
@@ -1059,27 +1064,27 @@
 
     <script>
         const cursor = document.getElementById('cursor');
-        async function typeValue(id, text) { const el = document.getElementById(id); el.classList.add('active-typing'); el.value = ""; for (const char of text) { el.value += char; await new Promise(r => setTimeout(r, 50 + Math.random() * 40)); } await new Promise(r => setTimeout(r, 300)); el.classList.remove('active-typing'); }
+        async function typeValue(id, text) { const el = document.getElementById(id); el.classList.add('active-typing'); el.value = ""; for (const char of text) { el.value += char; await new Promise(r => setTimeout(r, 60 + Math.random() * 50)); } await new Promise(r => setTimeout(r, 400)); el.classList.remove('active-typing'); }
         async function performClick(id) {
             const el = document.getElementById(id); const rect = el.getBoundingClientRect();
             cursor.style.display = 'block'; cursor.style.left = (rect.left + rect.width / 2) + 'px'; cursor.style.top = (rect.top + rect.height / 2) + 'px';
-            await new Promise(r => setTimeout(r, 500)); cursor.classList.add('clicking');
-            if (id === 'cover-box') { document.getElementById('cover-box').classList.add('active-click'); await new Promise(r => setTimeout(r, 150)); document.getElementById('book-img').classList.add('visible'); document.getElementById('cover-placeholder').style.opacity = '0'; document.getElementById('cover-box').classList.remove('active-click'); }
-            if (id === 'btn-save') { el.classList.add('clicked'); await new Promise(r => setTimeout(r, 200)); el.classList.remove('clicked'); el.innerText = "Saved Successfully ✓"; }
-            await new Promise(r => setTimeout(r, 200)); cursor.classList.remove('clicking');
+            await new Promise(r => setTimeout(r, 700)); cursor.classList.add('clicking');
+            if (id === 'cover-box') { document.getElementById('cover-box').classList.add('active-click'); await new Promise(r => setTimeout(r, 250)); document.getElementById('book-img').classList.add('visible'); document.getElementById('cover-placeholder').style.opacity = '0'; document.getElementById('cover-box').classList.remove('active-click'); }
+            if (id === 'btn-save') { el.classList.add('clicked'); await new Promise(r => setTimeout(r, 300)); el.classList.remove('clicked'); el.innerText = "Saved Successfully ✓"; }
+            await new Promise(r => setTimeout(r, 300)); cursor.classList.remove('clicking');
         }
         async function runDemo() {
             document.getElementById('input-title').value = ""; document.getElementById('input-author').value = ""; document.getElementById('input-genre').value = ""; document.getElementById('input-tags').value = ""; document.getElementById('book-img').classList.remove('visible'); document.getElementById('cover-placeholder').style.opacity = '1'; document.getElementById('select-month').value = "January"; document.getElementById('select-year').value = "2025"; document.getElementById('btn-save').innerText = "Save notes"; cursor.style.display = 'none';
-            await new Promise(r => setTimeout(r, 800));
-            await performClick('cover-box'); await new Promise(r => setTimeout(r, 300));
+            await new Promise(r => setTimeout(r, 1200));
+            await performClick('cover-box'); await new Promise(r => setTimeout(r, 400));
             await performClick('input-title'); await typeValue('input-title', 'The Favorites');
             await performClick('input-author'); await typeValue('input-author', 'Layne Fargo');
             await performClick('input-genre'); await typeValue('input-genre', 'Romance, Fiction');
             await performClick('input-tags'); await typeValue('input-tags', 'love');
-            await performClick('wrap-month'); document.getElementById('wrap-month').classList.add('focused'); await new Promise(r => setTimeout(r, 300)); document.getElementById('select-month').value = "February"; await new Promise(r => setTimeout(r, 400)); document.getElementById('wrap-month').classList.remove('focused');
-            await performClick('wrap-year'); document.getElementById('wrap-year').classList.add('focused'); await new Promise(r => setTimeout(r, 300)); document.getElementById('select-year').value = "2026"; await new Promise(r => setTimeout(r, 400)); document.getElementById('wrap-year').classList.remove('focused');
+            await performClick('wrap-month'); document.getElementById('wrap-month').classList.add('focused'); await new Promise(r => setTimeout(r, 400)); document.getElementById('select-month').value = "February"; await new Promise(r => setTimeout(r, 600)); document.getElementById('wrap-month').classList.remove('focused');
+            await performClick('wrap-year'); document.getElementById('wrap-year').classList.add('focused'); await new Promise(r => setTimeout(r, 400)); document.getElementById('select-year').value = "2026"; await new Promise(r => setTimeout(r, 600)); document.getElementById('wrap-year').classList.remove('focused');
             await performClick('btn-save');
-            await new Promise(r => setTimeout(r, 3000)); runDemo();
+            await new Promise(r => setTimeout(r, 4000)); runDemo();
         }
         setTimeout(runDemo, 150);
     <\/script>
@@ -1256,7 +1261,7 @@
         cursor.style.left = (rect.left + rect.width / 2) + 'px';
         cursor.style.top = (rect.top + rect.height / 2) + 'px';
         
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 700)); // Замедлили движение
         cursor.classList.add('clicking');
         
         if(!isDirectElement && elementId === 'btn-gen') {
@@ -1269,7 +1274,7 @@
                 div.innerText = q;
                 cloud.insertBefore(div, el);
             });
-            await new Promise(r => setTimeout(r, 200));
+            await new Promise(r => setTimeout(r, 300));
             el.classList.remove('clicked');
         }
 
@@ -1293,7 +1298,7 @@
             container.appendChild(div);
         }
 
-        await new Promise(r => setTimeout(r, 200));
+        await new Promise(r => setTimeout(r, 300));
         cursor.classList.remove('clicking');
     }
 
@@ -1303,7 +1308,7 @@
         for (const char of text) {
             ta.value += char;
             ta.scrollTop = ta.scrollHeight;
-            await new Promise(r => setTimeout(r, 15 + Math.random() * 20));
+            await new Promise(r => setTimeout(r, 20 + Math.random() * 30)); // Замедлили печать
         }
     }
 
@@ -1314,15 +1319,15 @@
             document.querySelectorAll('.generated-q').forEach(q => q.remove());
             cursor.style.display = 'none';
             
-            await new Promise(r => setTimeout(r, 500));
+            await new Promise(r => setTimeout(r, 1000));
             await moveAndClick('btn-gen');
-            await new Promise(r => setTimeout(r, 400));
+            await new Promise(r => setTimeout(r, 600));
             await moveAndClick('chip-main');
-            await new Promise(r => setTimeout(r, 300));
+            await new Promise(r => setTimeout(r, 500));
             
             const ta = document.getElementById('main-textarea');
             if (ta) { await typeText(shortenedText); }
-            await new Promise(r => setTimeout(r, 800));
+            await new Promise(r => setTimeout(r, 1500));
 
             const btnDelete = document.getElementById('btn-delete-answer');
             if (btnDelete) {
@@ -1335,10 +1340,10 @@
                 generatedQs.forEach(q => q.classList.add('vanishing'));
                 document.getElementById('chip-main').classList.remove('selected');
 
-                await new Promise(r => setTimeout(r, 400));
+                await new Promise(r => setTimeout(r, 600));
             }
             
-            await new Promise(r => setTimeout(r, 300));
+            await new Promise(r => setTimeout(r, 500));
         }
     }
 
@@ -1537,18 +1542,18 @@
             cursor.style.display = 'none';
             cursor.style.left = '-100px';
             
-            await new Promise(r => setTimeout(r, 800));
+            await new Promise(r => setTimeout(r, 1200));
 
             const rect = btnLinks.getBoundingClientRect();
             cursor.style.display = 'block';
             cursor.style.left = (rect.left + rect.width / 2) + 'px';
             cursor.style.top = (rect.top + rect.height / 2) + 'px';
             
-            await new Promise(r => setTimeout(r, 500));
+            await new Promise(r => setTimeout(r, 800));
             
             cursor.classList.add('clicking');
             btnLinks.classList.add('active');
-            await new Promise(r => setTimeout(r, 200));
+            await new Promise(r => setTimeout(r, 300));
             cursor.classList.remove('clicking');
             btnLinks.classList.remove('active');
 
@@ -1556,22 +1561,22 @@
 
             cardMain.classList.add('network-view');
             
-            await new Promise(r => setTimeout(r, 200));
+            await new Promise(r => setTimeout(r, 400));
             document.getElementById('card-r1').classList.add('visible');
-            await new Promise(r => setTimeout(r, 100));
+            await new Promise(r => setTimeout(r, 200));
             document.getElementById('card-r2').classList.add('visible');
-            await new Promise(r => setTimeout(r, 100));
+            await new Promise(r => setTimeout(r, 200));
             document.getElementById('card-r3').classList.add('visible');
 
-            await new Promise(r => setTimeout(r, 250));
+            await new Promise(r => setTimeout(r, 400));
             lines.forEach(l => l.classList.add('drawn'));
 
-            await new Promise(r => setTimeout(r, 3000));
+            await new Promise(r => setTimeout(r, 4500));
             
-            document.body.style.transition = 'opacity 0.6s ease';
+            document.body.style.transition = 'opacity 0.8s ease';
             document.body.style.opacity = '0';
             
-            await new Promise(r => setTimeout(r, 700));
+            await new Promise(r => setTimeout(r, 1000));
             
             document.body.style.opacity = '1';
         }
@@ -1765,7 +1770,7 @@
                 if (img) img.remove();
             });
 
-            await new Promise(r => setTimeout(r, 800));
+            await new Promise(r => setTimeout(r, 1200));
 
             // 2. Постепенное заполнение
             for (let i = 0; i < slots.length; i++) {
@@ -1776,7 +1781,7 @@
                 img.src = imgUrl;
                 slot.appendChild(img);
                 
-                await new Promise(r => setTimeout(r, 40));
+                await new Promise(r => setTimeout(r, 100));
                 slot.classList.add('filled');
 
                 const left = slots.length - (i + 1);
@@ -1788,14 +1793,14 @@
                     statusSub.innerText = "You have read 10 books this year.";
                 }
 
-                await new Promise(r => setTimeout(r, 250));
+                await new Promise(r => setTimeout(r, 400));
             }
 
-            await new Promise(r => setTimeout(r, 3000));
+            await new Promise(r => setTimeout(r, 4500));
             
             document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.8s ease';
-            await new Promise(r => setTimeout(r, 800));
+            document.body.style.transition = 'opacity 1s ease';
+            await new Promise(r => setTimeout(r, 1200));
             document.body.style.opacity = '1';
         }
     }
