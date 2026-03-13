@@ -479,28 +479,35 @@
 
         /* Планшеты (Tablet) */
         @media (max-width: 1024px) {
-            .hero { padding: 80px 20px; } /* Уменьшили отступы на 20px */
+            /* Отступы между всеми блоками: 60px (низ текущего) + 60px (верх следующего) = 120px */
+            .hero { padding: 60px 20px; } 
+            .showcase-section { padding: 60px 20px; }
+            .final-cta { padding: 60px 20px; }
             
             .split-section, .split-section.reversed { 
+                padding: 60px 20px; 
                 gap: 80px; /* Отступ от текста до гифки 80px */
-                padding: 80px 20px; /* В сумме дает 160px между блоками */
                 flex-direction: column; 
                 flex-wrap: wrap; 
             }
             
             .split-text { 
                 text-align: center; 
-                max-width: 600px; /* Сузили контейнер текста до 600px */
+                max-width: 465px; /* Увеличили на 15px для комфорта текста (было 450) */
                 margin: 0 auto; /* Центрируем контейнер */
+                flex: none; /* СБРОС flex-basis: исправляет баг с гигантской высотой текстового блока */
+                width: 100%;
             }
             
-            .split-desc { font-size: 14px; } /* Текст описания 14px */
+            .split-desc { 
+                font-size: 14px; 
+                text-wrap: pretty; /* CSS-свойство для предотвращения слов-сирот в конце абзаца */
+            }
             
             .split-visual { width: 100%; justify-content: center; overflow: hidden; }
             .title-serif { font-size: 48px; }
             .title-sans { font-size: 18px; }
             .final-title { font-size: 48px; }
-            .showcase-section { padding: 50px 20px 80px 20px; }
         }
 
         /* Мобильные телефоны (Mobile) */
@@ -521,9 +528,19 @@
             .final-title { font-size: 36px; }
             .footer-content { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; }
             
+            /* Отступы между всеми блоками: 60px (низ текущего) + 60px (верх следующего) = 120px */
             .hero { padding: 60px 20px; }
-            .split-section, .split-section.reversed { padding: 60px 20px; gap: 40px; } /* На мобильных можно оставить чуть меньше отступы */
-            .final-cta { padding: 80px 20px; }
+            .showcase-section { padding: 60px 20px; }
+            .final-cta { padding: 60px 20px; }
+            
+            .split-section, .split-section.reversed { 
+                padding: 60px 20px; 
+                gap: 60px; /* Отступ от текста до гифки 60px */
+            } 
+            
+            .split-text {
+                max-width: 375px; /* Ограничили ширину текста на мобильных (увеличили на 15px, было 360) */
+            }
             
             #showcase-iframe { border-radius: 16px; }
         }
@@ -721,6 +738,16 @@
         }, { threshold: 0.15 }); // Срабатывает, когда 15% заголовка показалось на экране
 
         document.querySelectorAll('.fade-up').forEach(el => fadeUpObserver.observe(el));
+
+        // Автоматическая корректировка висячих предлогов (Hanging prepositions fix)
+        // Привязывает короткие слова (1-3 буквы) к следующему слову неразрывным пробелом
+        document.querySelectorAll('.description, .split-desc').forEach(el => {
+            let html = el.innerHTML;
+            // Прогоняем дважды, чтобы захватить подряд идущие короткие слова (например "at a ")
+            html = html.replace(/(^|\s)([a-zA-Z]{1,3})\s/g, '$1$2&nbsp;');
+            html = html.replace(/(^|\s)([a-zA-Z]{1,3})\s/g, '$1$2&nbsp;');
+            el.innerHTML = html;
+        });
 
         // Слушатель для динамического изменения высоты второго блока (Showcase)
         window.addEventListener('message', (event) => {
