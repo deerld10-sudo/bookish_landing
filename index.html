@@ -475,33 +475,84 @@
             transform: scale(0.8);
         }
 
-        /* Адаптив для маленьких экранов */
+        /* --- АДАПТИВНОСТЬ (Полностью переписана для Планшетов и Мобильных) --- */
+
+        /* Планшеты (Tablet) */
         @media (max-width: 1024px) {
-            /* Сбрасываем row-reverse в column, чтобы текст всегда был сверху на мобильных */
-            .split-section, .split-section.reversed { gap: 40px; padding: 100px 20px; flex-direction: column; flex-wrap: wrap; }
+            .split-section, .split-section.reversed { gap: 40px; padding: 80px 20px; flex-direction: column; flex-wrap: wrap; }
             .split-text { text-align: center; max-width: 100%; }
-            .split-visual { 
-                width: 100%; 
-                justify-content: center; 
-            }
+            .split-visual { width: 100%; justify-content: center; overflow: hidden; }
+            .title-serif { font-size: 48px; }
+            .title-sans { font-size: 18px; }
+            .final-title { font-size: 48px; }
+            .showcase-section { padding: 50px 20px 80px 20px; }
         }
 
+        /* Мобильные телефоны (Mobile) */
         @media (max-width: 768px) {
-            header { padding: 24px 20px; }
-            .title-serif { font-size: 42px; }
+            header { padding: 20px; }
+            .logo img { height: 32px; }
+            .btn-auth { padding: 0 16px; font-size: 12px; height: 34px; }
+            
+            .title-serif { font-size: 40px; }
             .title-sans { font-size: 16px; }
-            #showcase-iframe { 
-                border-radius: 16px; 
+            .description { font-size: 15px; }
+            
+            /* Уменьшаем шрифты текстовых блоков, чтобы они влезали в экран */
+            .title-sans-medium { font-size: 26px; }
+            .title-serif-medium { font-size: 32px; }
+            .split-desc { font-size: 14px; }
+            
+            .final-title { font-size: 36px; }
+            .footer-content { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; }
+            
+            .hero { padding: 60px 20px 60px 20px; }
+            .split-section, .split-section.reversed { padding: 60px 20px; gap: 30px; }
+            .final-cta { padding: 80px 20px; }
+            
+            #showcase-iframe { border-radius: 16px; }
+        }
+
+        /* ТОЧНЫЙ ДИНАМИЧЕСКИЙ СКЕЙЛИНГ АНИМАЦИЙ (Для экранов меньше 650px)
+           Формула (100vw - 40px) высчитывает ширину экрана за вычетом боковых отступов, 
+           чтобы анимации сжимались строго пропорционально и не ломали верстку. */
+        @media (max-width: 650px) {
+            .iframe-scaler {
+                width: calc(100vw - 40px) !important;
+                transform: none !important;
+                margin: 0 auto !important;
             }
             
-            .final-title { font-size: 42px; }
-            .footer-content { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; } /* Применяем адаптив к новой обертке */
+            /* 1. Форма добавления (Base Form) */
+            .iframe-scaler:not(.tall):not(.zk-scaler):not(.goal-scaler) {
+                height: calc((100vw - 40px) * (336 / 532)) !important;
+            }
+            #form-demo-iframe {
+                transform: scale(calc((100vw - 40px) / 760)) !important;
+            }
 
-            /* Чуть-чуть уменьшаем обертку, если экран совсем маленький */
-            .iframe-scaler {
-                transform: scale(0.9);
-                transform-origin: top center;
-                margin-bottom: -24px;
+            /* 2. Вопросы (Tall Form) */
+            .iframe-scaler.tall {
+                height: calc((100vw - 40px) * (406 / 532)) !important;
+            }
+            #questions-demo-iframe {
+                transform: scale(calc((100vw - 40px) / 760)) !important;
+            }
+
+            /* 3. Zettelkasten (ZK Scaler) */
+            .iframe-scaler.zk-scaler {
+                height: calc((100vw - 40px) * (437 / 578)) !important;
+            }
+            #zk-demo-iframe {
+                transform: scale(calc((100vw - 40px) / 900)) !important;
+            }
+
+            /* 4. Цели (Goal Scaler) */
+            .iframe-scaler.goal-scaler {
+                height: calc((100vw - 40px) * (400 / 512)) !important;
+            }
+            #goal-demo-iframe {
+                transform: scale(calc((100vw - 40px) / 640)) !important;
             }
         }
     </style>
@@ -695,21 +746,21 @@
             color: var(--tg-text); margin: 0; padding: 0;
             display: flex; justify-content: center;
             overflow-x: hidden; scrollbar-width: none; font-size: 12px; 
-            /* Убрали min-height: 100vh, чтобы тело плотно облегало контент */
         }
         body::-webkit-scrollbar { display: none; }
-        .app-container { width: 100%; max-width: 100%; display: flex; flex-direction: column; position: relative; } /* Убрали min-height: 100vh */
+        .app-container { width: 100%; max-width: 100%; display: flex; flex-direction: column; position: relative; } 
         .top-nav { padding: 20px 40px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); background: var(--tg-bg); position: sticky; top: 0; z-index: 100; }
         .nav-items-wrapper { display: flex; gap: 8px; flex: 1; overflow: hidden; }
-        .nav-item { padding: 8px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; background-color: var(--tg-sec-bg); color: rgba(142, 142, 147, 0.6); } /* Приглушили цвет меню */
+        .nav-item { padding: 8px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; background-color: var(--tg-sec-bg); color: rgba(142, 142, 147, 0.6); } 
         .nav-item.active { background-color: var(--tg-text); color: #000; }
         .search-container { padding: 20px 40px; }
         .search-input { width: 100%; background: var(--tg-sec-bg); border: none; border-radius: var(--border-radius-input); padding: 14px 16px; color: var(--tg-text); font-size: 12px; font-weight: 400; }
-        .search-input::placeholder { color: rgba(142, 142, 147, 0.6); } /* Сравняли цвет плейсхолдера с меню */
+        .search-input::placeholder { color: rgba(142, 142, 147, 0.6); } 
         
-        /* Жестко форсируем 6 колонок для десктопа, чтобы карточки всегда сжимались и вставали в один ряд */
+        /* Исправленная сетка для гифки полки */
         .book-shelf { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; padding: 0 40px 40px 40px; }
-        @media (max-width: 600px) { .book-shelf { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px 20px 20px; } }
+        @media (max-width: 800px) { .book-shelf { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px 20px 20px; } }
+        @media (max-width: 480px) { .book-shelf { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 16px 16px 16px; } .top-nav { padding: 16px 20px; } .search-container { padding: 16px 20px; } }
         
         .book-card { position: relative; opacity: 0; transform: translateX(-15px); }
         .book-card.visible { opacity: 1; transform: translateX(0); }
