@@ -16,6 +16,7 @@
             /* Landing colors */
             --bg: #161618; 
             --text-primary: #FFFFFF;
+            --text-secondary: #A1A1AA; /* Добавлен приятный сплошной серый цвет для текстов-описаний */
             --btn-dark: #27272A;
             --btn-dark-hover: #3F3F46;
             --accent-green: #85BD3F; 
@@ -174,7 +175,7 @@
             line-height: 1.6;
             max-width: 520px; /* Чуть расширили, чтобы текст ложился ровно в 2 строки, а не в 3 */
             text-wrap: balance; /* Заставляет браузер делать строки визуально равной длины */
-            opacity: 0.6;
+            color: var(--text-secondary); /* Используем сплошной серый вместо opacity */
             margin-bottom: 30px;
         }
 
@@ -296,8 +297,7 @@
             font-size: 16px; /* Увеличили до 16px */
             font-weight: 400; /* Сделали текст тоньше */
             line-height: 1.6;
-            color: var(--text-primary);
-            opacity: 0.6;
+            color: var(--text-secondary); /* Используем сплошной серый вместо opacity */
             margin: 0;
         }
 
